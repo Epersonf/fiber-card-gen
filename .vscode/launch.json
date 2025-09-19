@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "React CRA: Start + Chrome",
+      "configurations": [
+        "CRA: npm start",
+        "Chrome: http://localhost:3000"
+      ],
+      "preLaunchTask": "npm: start"
+    }
+  ],
+  "configurations": [
+    {
+      "type": "pwa-chrome",
+      "request": "launch",
+      "name": "Chrome: http://localhost:3000",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/src",
+      "sourceMaps": true
+    },
+    {
+      "type": "node-terminal",
+      "request": "launch",
+      "name": "CRA: npm start",
+      "command": "npm run start"
+    }
+  ]
+}
