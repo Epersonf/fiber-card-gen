@@ -57,7 +57,8 @@ export default function HairScene() {
     format: THREE.RGBAFormat,
     type: THREE.UnsignedByteType,
     minFilter: THREE.LinearFilter,
-    magFilter: THREE.LinearFilter
+    magFilter: THREE.LinearFilter,
+    stencilBuffer: false,
   }), [width, height]);
 
   const normalRT = useMemo(() => new THREE.WebGLRenderTarget(width, height, {
@@ -65,7 +66,8 @@ export default function HairScene() {
     format: THREE.RGBAFormat,
     type: THREE.UnsignedByteType,
     minFilter: THREE.LinearFilter,
-    magFilter: THREE.LinearFilter
+    magFilter: THREE.LinearFilter,
+    stencilBuffer: false,
   }), [width, height]);
 
   useEffect(() => {
@@ -94,16 +96,34 @@ export default function HairScene() {
 
     const r = rendererRef.current;
 
+    // Coletar e ocultar todos os cardPlanes
+    const cardPlanes: THREE.Object3D[] = [];
+    scene.traverse((child) => {
+      if (child.userData?.isCardPlane) {
+        cardPlanes.push(child);
+        child.visible = false;
+      }
+    });
+
     if (setup) setup();
 
     r.setRenderTarget(target);
     r.setClearColor(clearColor, clearAlpha);
+    r.clear();
     r.render(scene, camera);
     r.setRenderTarget(null);
 
+    // Restaurar a visibilidade dos cardPlanes
+    cardPlanes.forEach(child => {
+      child.visible = true;
+    });
+
     if (cleanup) cleanup();
 
-    downloadRenderTarget(r, target, filename);
+    // Forçar um pequeno delay para garantir que o render target esteja pronto
+    setTimeout(() => {
+      downloadRenderTarget(r, target, filename);
+    }, 100);
   };
 
   return (
@@ -152,8 +172,14 @@ export default function HairScene() {
         orthographic
         camera={cameraProps}
         dpr={[1, 2]}
-        gl={{ preserveDrawingBuffer: true, antialias: true }}
+        gl={{
+          preserveDrawingBuffer: true,
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance",
+        }}
         onCreated={({ gl }) => {
+          gl.setClearColor(0x000000, 0);
           rendererRef.current = gl;
         }}
       >

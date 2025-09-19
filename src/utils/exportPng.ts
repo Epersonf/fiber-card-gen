@@ -11,7 +11,7 @@ export function downloadRenderTarget(renderer: THREE.WebGLRenderer, rt: THREE.We
   const canvas = document.createElement("canvas");
   canvas.width = w;
   canvas.height = h;
-  const ctx = canvas.getContext("2d")!;
+  const ctx = canvas.getContext("2d", { alpha: true })!;
 
   // Criar ImageData
   const imageData = ctx.createImageData(w, h);
@@ -22,10 +22,19 @@ export function downloadRenderTarget(renderer: THREE.WebGLRenderer, rt: THREE.We
       const srcIndex = (y * w + x) * 4;
       const dstIndex = ((h - 1 - y) * w + x) * 4;
 
-      imageData.data[dstIndex] = pixels[srcIndex];     // R
-      imageData.data[dstIndex + 1] = pixels[srcIndex + 1]; // G
-      imageData.data[dstIndex + 2] = pixels[srcIndex + 2]; // B
-      imageData.data[dstIndex + 3] = pixels[srcIndex + 3]; // A
+      const r = pixels[srcIndex];
+      const g = pixels[srcIndex + 1];
+      const b = pixels[srcIndex + 2];
+      const a = pixels[srcIndex + 3];
+
+      // Tornar transparentes pixels que são muito escuros ou do fundo
+      const isBackground = (r < 20 && g < 20 && b < 20) || a < 10;
+      const newAlpha = isBackground ? 0 : a;
+
+      imageData.data[dstIndex] = r;
+      imageData.data[dstIndex + 1] = g;
+      imageData.data[dstIndex + 2] = b;
+      imageData.data[dstIndex + 3] = newAlpha;
     }
   }
 

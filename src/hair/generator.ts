@@ -42,6 +42,7 @@ export function buildHairGroup(seed = 1): THREE.Group {
         new THREE.PlaneGeometry(cellW, cellH),
         new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.08 })
       );
+      cardPlane.userData.isCardPlane = true; // Adicionar esta linha
       cardPlane.position.set(0, 0, 0);
       card.add(cardPlane);
 
