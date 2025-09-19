@@ -1,6 +1,11 @@
 import * as THREE from "three";
 
-export function downloadRenderTarget(renderer: THREE.WebGLRenderer, rt: THREE.WebGLRenderTarget, filename = "output.png") {
+export function downloadRenderTarget(
+  renderer: THREE.WebGLRenderer,
+  rt: THREE.WebGLRenderTarget,
+  filename = "output.png",
+  makeTransparent = true // Novo parâmetro para controlar transparência
+) {
   const w = rt.width, h = rt.height;
   const pixels = new Uint8Array(w * h * 4);
 
@@ -27,9 +32,12 @@ export function downloadRenderTarget(renderer: THREE.WebGLRenderer, rt: THREE.We
       const b = pixels[srcIndex + 2];
       const a = pixels[srcIndex + 3];
 
-      // Tornar transparentes pixels que são muito escuros ou do fundo
-      const isBackground = (r < 20 && g < 20 && b < 20) || a < 10;
-      const newAlpha = isBackground ? 0 : a;
+      // Aplicar transparência apenas se makeTransparent for true
+      let newAlpha = a;
+      if (makeTransparent) {
+        const isBackground = (r === 0 && g === 0 && b === 0) || a === 0;
+        newAlpha = isBackground ? 0 : a;
+      }
 
       imageData.data[dstIndex] = r;
       imageData.data[dstIndex + 1] = g;

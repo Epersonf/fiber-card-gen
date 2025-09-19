@@ -91,7 +91,15 @@ export default function HairScene() {
     position: [0, 0, 10] as [number, number, number],
   };
 
-  const handleRender = (target: THREE.WebGLRenderTarget, filename: string, clearColor: number, clearAlpha: number, setup?: () => void, cleanup?: () => void) => {
+  const handleRender = (
+    target: THREE.WebGLRenderTarget,
+    filename: string,
+    clearColor: number,
+    clearAlpha: number,
+    setup?: () => void,
+    cleanup?: () => void,
+    makeTransparent = true // Novo parâmetro
+  ) => {
     if (!scene || !camera || !rendererRef.current) return;
 
     const r = rendererRef.current;
@@ -122,7 +130,7 @@ export default function HairScene() {
 
     // Forçar um pequeno delay para garantir que o render target esteja pronto
     setTimeout(() => {
-      downloadRenderTarget(r, target, filename);
+      downloadRenderTarget(r, target, filename, makeTransparent);
     }, 100);
   };
 
@@ -130,13 +138,7 @@ export default function HairScene() {
     <div className="scene">
       <div className="toolbar">
         <button onClick={() => {
-          const tempRT = new THREE.WebGLRenderTarget(width, height);
-          handleRender(tempRT, "hair_card.png", 0x000000, 0.0);
-          tempRT.dispose();
-        }}>Download PNG</button>
-
-        <button onClick={() => {
-          handleRender(colorRT, "hair_color.png", 0x000000, 0.0);
+          handleRender(colorRT, "hair_color.png", 0x000000, 0.0, undefined, undefined, true);
         }}>Render Color</button>
 
         <button onClick={() => {
@@ -145,8 +147,8 @@ export default function HairScene() {
           handleRender(
             normalRT,
             "hair_normal.png",
-            0x8080ff,
-            1.0,
+            0x8080ff, // Cor azul para o fundo do normal map
+            1.0,      // Alpha 1.0 (totalmente opaco)
             () => {
               // Switch to normal material for all meshes
               scene?.traverse((child) => {
@@ -163,7 +165,8 @@ export default function HairScene() {
                   child.material = originalMaterials.get(child)!;
                 }
               });
-            }
+            },
+            false // Não aplicar transparência para o normal map
           );
         }}>Render Normal</button>
       </div>

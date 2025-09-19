@@ -11,14 +11,6 @@ export default function StudioPanel() {
   return (
     <div className="panel">
       <div className="group">
-        <h4>Hair Card Settings</h4>
-        <div className="row">
-          <button onClick={() => set({ individualModification: true })} style={{ fontWeight: s.individualModification ? '700' : '400' }}>Individual Modification</button>
-          <button onClick={() => set({ individualModification: false })} style={{ fontWeight: !s.individualModification ? '700' : '400' }}>Multiple Modification</button>
-        </div>
-      </div>
-
-      <div className="group">
         <h4>Render Options</h4>
         <label>Base Width <input type="number" value={s.baseWidth} onChange={e => set({ baseWidth: +e.target.value })} /></label>
         <label>Base Height <input type="number" value={s.baseHeight} onChange={e => set({ baseHeight: +e.target.value })} /></label>

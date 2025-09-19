@@ -12,9 +12,6 @@ type StudioState = {
 
   normalSpace: NormalSpace;
 
-  // Modification Mode
-  individualModification: boolean;
-
   // Hair Amount / Strand Points
   hair_amount_offset: number;
   strand_points_count: number;
@@ -84,8 +81,6 @@ export const useStudio = create<StudioState>((set, get) => ({
   marginPx: 0,
 
   normalSpace: "tangent",
-
-  individualModification: false,
 
   hair_amount_offset: 0,
   strand_points_count: 8,
