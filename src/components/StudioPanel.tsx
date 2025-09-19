@@ -137,7 +137,6 @@ export default function StudioPanel() {
       </DSGroup>
 
       <DSGroup title="Lighting Option">
-        <label>Light Source Size <input type="range" min={0.002} max={0.2} step={0.002} value={s.light_source_size} onChange={e => set({ light_source_size: +e.target.value })} /></label>
         <label>Light Source Location <input type="range" min={-20} max={4} step={0.01} value={s.light_source_location} onChange={e => set({ light_source_location: +e.target.value })} /></label>
         <label>Intensity <input type="range" min={0} max={10000} step={1} value={s.light_intensity} onChange={e => set({ light_intensity: +e.target.value })} /></label>
       </DSGroup>

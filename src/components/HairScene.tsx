@@ -126,9 +126,16 @@ export default function HairScene() {
         orthographic
         camera={cameraProps}
         dpr={[1, 2]}
-        gl={{ preserveDrawingBuffer: true, antialias: true, alpha: true, powerPreference: "high-performance" }}
-        onCreated={({ gl }) => {
+        gl={{
+          preserveDrawingBuffer: true,
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance",
+        }}
+        onCreated={({ gl, scene }) => {
           gl.setClearColor(0x000000, 0);
+          gl.toneMapping = THREE.ACESFilmicToneMapping;  // ← Melhor tom mapping
+          gl.toneMappingExposure = 0.7;  // ← Exposição ajustável
           (rendererRef as any).current = gl;
         }}
       >

@@ -85,7 +85,7 @@ export function buildHairGroup(seed = 1): THREE.Group {
         const mat = new THREE.MeshStandardMaterial({
           color: new THREE.Color(...s.hair_color.slice(0, 3) as [number, number, number]),
           metalness: s.glossiness,
-          roughness: s.sheen
+          roughness: 1 - s.sheen,
         });
         const mesh = new THREE.Mesh(tube, mat);
         strandGroup.add(mesh);

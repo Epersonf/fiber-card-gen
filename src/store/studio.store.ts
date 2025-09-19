@@ -66,7 +66,6 @@ type StudioState = {
   messiness_amount: number;
 
   // Luz
-  light_source_size: number;
   light_source_location: number;
   light_intensity: number;
 
@@ -124,7 +123,6 @@ export const useStudio = create<StudioState>((set, get) => ({
   messiness_starting_point: 0.0,
   messiness_amount: 0.0,
 
-  light_source_size: 0.10,
   light_source_location: -7.34,
   light_intensity: 3500,
 
