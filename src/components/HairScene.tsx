@@ -9,6 +9,7 @@ import WheelZoom from "./scene/WheelZoom";
 import DragPan from "./scene/DragPan";
 import SceneContent from "./scene/SceneContent";
 import RenderToolbar from "./scene/RenderToolbar";
+import Lights from "./scene/Lights";
 
 export default function HairScene() {
   const s = useStudio();
@@ -21,15 +22,31 @@ export default function HairScene() {
   const [camera, setCamera] = useState<THREE.OrthographicCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer>(null!);
 
-  const colorRT = useMemo(() => new THREE.WebGLRenderTarget(exportW, exportH, {
-    depthBuffer: false, format: THREE.RGBAFormat, type: THREE.UnsignedByteType,
-    minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, stencilBuffer: false,
-  }), [exportW, exportH]);
+  const colorRT = useMemo(
+    () =>
+      new THREE.WebGLRenderTarget(exportW, exportH, {
+        depthBuffer: false,
+        format: THREE.RGBAFormat,
+        type: THREE.UnsignedByteType,
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter,
+        stencilBuffer: false,
+      }),
+    [exportW, exportH]
+  );
 
-  const normalRT = useMemo(() => new THREE.WebGLRenderTarget(exportW, exportH, {
-    depthBuffer: false, format: THREE.RGBAFormat, type: THREE.UnsignedByteType,
-    minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, stencilBuffer: false,
-  }), [exportW, exportH]);
+  const normalRT = useMemo(
+    () =>
+      new THREE.WebGLRenderTarget(exportW, exportH, {
+        depthBuffer: false,
+        format: THREE.RGBAFormat,
+        type: THREE.UnsignedByteType,
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter,
+        stencilBuffer: false,
+      }),
+    [exportW, exportH]
+  );
 
   const handleRender = (
     target: THREE.WebGLRenderTarget,
@@ -69,7 +86,10 @@ export default function HairScene() {
   const renderNormal = () => {
     const originals = new Map<THREE.Mesh, THREE.Material>();
     handleRender(
-      normalRT, "hair_normal.png", 0x8080ff, 1.0,
+      normalRT,
+      "hair_normal.png",
+      0x8080ff,
+      1.0,
       () => {
         scene?.traverse((child) => {
           if (child instanceof THREE.Mesh) {
@@ -90,8 +110,13 @@ export default function HairScene() {
   };
 
   const cameraProps = {
-    left: -viewW / 2, right: viewW / 2, top: viewH / 2, bottom: -viewH / 2,
-    near: -1000, far: 1000, position: [0, 0, 10] as [number, number, number],
+    left: -viewW / 2,
+    right: viewW / 2,
+    top: viewH / 2,
+    bottom: -viewH / 2,
+    near: -1000,
+    far: 1000,
+    position: [0, 0, 10] as [number, number, number],
   };
 
   return (
@@ -111,8 +136,7 @@ export default function HairScene() {
         <WheelZoom />
         <DragPan />
         <color attach="background" args={["#1e1f22"]} />
-        <ambientLight intensity={1.2} />
-        <directionalLight position={[0.5, 1, 1]} intensity={0.9} />
+        <Lights />
         <SceneContent />
       </Canvas>
     </SceneContainer>
