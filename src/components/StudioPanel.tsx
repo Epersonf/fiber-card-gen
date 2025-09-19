@@ -1,5 +1,6 @@
 // src/components/StudioPanel.tsx
 import { useStudio } from "../store/studio.store";
+import LightsPanel from "./studio/LightsPanel";
 import DSGroup from "./ui/ds-group/DSGroup";
 import LabelRow from "./ui/label-row/LabelRow";
 import Panel from "./ui/panel/Panel";
@@ -136,10 +137,7 @@ export default function StudioPanel() {
         )}
       </DSGroup>
 
-      <DSGroup title="Lighting Option">
-        <label>Light Source Location <input type="range" min={-20} max={4} step={0.01} value={s.light_source_location} onChange={e => set({ light_source_location: +e.target.value })} /></label>
-        <label>Intensity <input type="range" min={0} max={10000} step={1} value={s.light_intensity} onChange={e => set({ light_intensity: +e.target.value })} /></label>
-      </DSGroup>
+      <LightsPanel />
     </Panel>
   );
 }

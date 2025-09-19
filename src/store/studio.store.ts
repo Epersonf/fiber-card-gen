@@ -1,8 +1,12 @@
 import { create } from "zustand";
+import { Light } from "../models/light.int";
 
 export type NormalSpace = "tangent" | "object" | "world";
 
 type StudioState = {
+  // Light
+  lights: Light[];
+
   // Render / folha
   baseWidth: number;           // ex.: 6700
   baseHeight: number;          // ex.: 3000
@@ -70,9 +74,23 @@ type StudioState = {
   light_intensity: number;
 
   set: (s: Partial<StudioState>) => void;
+  addLight: (light: Omit<Light, 'id'>) => void;
+  updateLight: (id: string, updates: Partial<Light>) => void;
+  removeLight: (id: string) => void;
 };
 
 export const useStudio = create<StudioState>((set, get) => ({
+  lights: [
+    {
+      id: '1',
+      type: 'directional',
+      position: [0, 0, 5],
+      intensity: 3500,
+      color: '#ffffff',
+      enabled: true
+    },
+  ],
+
   baseWidth: 6700,
   baseHeight: 3000,
   percentage: 1.0,
@@ -127,4 +145,15 @@ export const useStudio = create<StudioState>((set, get) => ({
   light_intensity: 3500,
 
   set: (s) => set(s),
+  addLight: (light) => set((state) => ({
+    lights: [...state.lights, { ...light, id: Math.random().toString(36).substr(2, 9) }]
+  })),
+  updateLight: (id, updates) => set((state) => ({
+    lights: state.lights.map(light =>
+      light.id === id ? { ...light, ...updates } : light
+    )
+  })),
+  removeLight: (id) => set((state) => ({
+    lights: state.lights.filter(light => light.id !== id)
+  })),
 }));
