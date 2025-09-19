@@ -1,9 +1,22 @@
-import React, { useEffect, useMemo, useRef } from "react";
-import { Canvas } from "@react-three/fiber";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Canvas, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { buildHairGroup } from "../hair/generator";
 import { useStudio } from "../store/useStudio";
 import { downloadRenderTarget } from "../utils/exportPng";
+
+// Componente para capturar a cena e a câmera
+function SceneSetup({ onSceneReady }: { onSceneReady: (scene: THREE.Scene, camera: THREE.OrthographicCamera) => void }) {
+  const { scene, camera } = useThree();
+
+  useEffect(() => {
+    if (camera instanceof THREE.OrthographicCamera) {
+      onSceneReady(scene, camera);
+    }
+  }, [scene, camera, onSceneReady]);
+
+  return null;
+}
 
 function SceneContent() {
   const s = useStudio();
@@ -35,8 +48,10 @@ export default function HairScene() {
   const width = Math.floor(s.baseWidth * s.percentage);
   const height = Math.floor(s.baseHeight * s.percentage);
 
+  const [scene, setScene] = useState<THREE.Scene | null>(null);
+  const [camera, setCamera] = useState<THREE.OrthographicCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer>(null!);
-  const sceneRef = useRef<THREE.Scene>(new THREE.Scene());
+
   const colorRT = useMemo(() => new THREE.WebGLRenderTarget(width, height, {
     depthBuffer: false,
     format: THREE.RGBAFormat,
@@ -59,6 +74,11 @@ export default function HairScene() {
     }
   }, [width, height]);
 
+  const handleSceneReady = (scene: THREE.Scene, camera: THREE.OrthographicCamera) => {
+    setScene(scene);
+    setCamera(camera);
+  };
+
   const cameraProps = {
     left: -width / 2,
     right: width / 2,
@@ -69,48 +89,62 @@ export default function HairScene() {
     position: [0, 0, 10] as [number, number, number],
   };
 
+  const handleRender = (target: THREE.WebGLRenderTarget, filename: string, clearColor: number, clearAlpha: number, setup?: () => void, cleanup?: () => void) => {
+    if (!scene || !camera || !rendererRef.current) return;
+
+    const r = rendererRef.current;
+
+    if (setup) setup();
+
+    r.setRenderTarget(target);
+    r.setClearColor(clearColor, clearAlpha);
+    r.render(scene, camera);
+    r.setRenderTarget(null);
+
+    if (cleanup) cleanup();
+
+    downloadRenderTarget(r, target, filename);
+  };
+
   return (
     <div className="scene">
       <div className="toolbar">
         <button onClick={() => {
-          const r = rendererRef.current;
-          const scene = sceneRef.current;
-          const cam = (r as any).__fiber?.store.getState().get().camera as THREE.OrthographicCamera;
+          const tempRT = new THREE.WebGLRenderTarget(width, height);
+          handleRender(tempRT, "hair_card.png", 0x000000, 0.0);
+          tempRT.dispose();
+        }}>Download PNG</button>
 
-          r.setRenderTarget(colorRT);
-          r.setClearColor(0x000000, 0.0);
-          r.render(scene, cam);
-          r.setRenderTarget(null);
-
-          downloadRenderTarget(r, colorRT, "hair_color.png");
+        <button onClick={() => {
+          handleRender(colorRT, "hair_color.png", 0x000000, 0.0);
         }}>Render Color</button>
 
         <button onClick={() => {
-          const r = rendererRef.current;
-          const scene = sceneRef.current;
-          const cam = (r as any).__fiber?.store.getState().get().camera as THREE.OrthographicCamera;
+          const originalMaterials = new Map<THREE.Mesh, THREE.Material>();
 
-          // Switch to normal material for all meshes
-          scene.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-              child.userData.originalMaterial = child.material;
-              child.material = new THREE.MeshNormalMaterial();
+          handleRender(
+            normalRT,
+            "hair_normal.png",
+            0x8080ff,
+            1.0,
+            () => {
+              // Switch to normal material for all meshes
+              scene?.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                  originalMaterials.set(child, child.material);
+                  child.material = new THREE.MeshNormalMaterial();
+                }
+              });
+            },
+            () => {
+              // Restore original materials
+              scene?.traverse((child) => {
+                if (child instanceof THREE.Mesh && originalMaterials.has(child)) {
+                  child.material = originalMaterials.get(child)!;
+                }
+              });
             }
-          });
-
-          r.setRenderTarget(normalRT);
-          r.setClearColor(0x8080ff, 1.0);
-          r.render(scene, cam);
-          r.setRenderTarget(null);
-
-          // Restore original materials
-          scene.traverse((child) => {
-            if (child instanceof THREE.Mesh && child.userData.originalMaterial) {
-              child.material = child.userData.originalMaterial;
-            }
-          });
-
-          downloadRenderTarget(r, normalRT, "hair_normal.png");
+          );
         }}>Render Normal</button>
       </div>
 
@@ -119,11 +153,11 @@ export default function HairScene() {
         camera={cameraProps}
         dpr={[1, 2]}
         gl={{ preserveDrawingBuffer: true, antialias: true }}
-        onCreated={({ gl, scene }) => {
+        onCreated={({ gl }) => {
           rendererRef.current = gl;
-          sceneRef.current = scene;
         }}
       >
+        <SceneSetup onSceneReady={handleSceneReady} />
         <color attach="background" args={["#1e1f22"]} />
         <ambientLight intensity={1.2} />
         <directionalLight position={[0.5, 1, 1]} intensity={0.9} />

@@ -81,7 +81,7 @@ export const useStudio = create<StudioState>((set, get) => ({
   baseHeight: 3000,
   percentage: 1.0,
   cardsPerSheet: 11,
-  marginPx: 32,
+  marginPx: 0,
 
   normalSpace: "tangent",
 

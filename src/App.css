@@ -1,19 +1,144 @@
-html, body, #root { height: 100%; margin: 0; }
-* { box-sizing: border-box; }
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
 
-.wrap { display: grid; grid-template-columns: 360px 1fr; height: 100%; }
-.panel { overflow: auto; border-right: 1px solid #e5e5e5; padding: 12px; }
-.scene { position: relative; }
+* {
+  box-sizing: border-box;
+}
 
-.toolbar { position: absolute; top: 10px; right: 10px; display: flex; gap: 8px; }
-button { padding: 8px 12px; border: 1px solid #ddd; background: #fff; cursor: pointer; border-radius: 8px; }
-button:hover { background: #f6f6f6; }
+.wrap {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  height: 100%;
+}
 
-.group { border: 1px solid #eee; border-radius: 10px; padding: 10px; margin-bottom: 10px; }
-.group h4 { margin: 0 0 8px 0; }
+.panel {
+  overflow: auto;
+  border-right: 1px solid #e5e5e5;
+  padding: 12px;
+}
 
-label { display: flex; justify-content: space-between; gap: 8px; margin: 6px 0; }
-input[type="range"] { width: 160px; }
-.row { display: flex; gap: 8px; flex-wrap: wrap; }
-.scene, .scene canvas { width: 100%; height: 100%; display: block; }
+.scene {
+  position: relative;
+}
 
+.toolbar {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+button {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+button:hover {
+  background: #f6f6f6;
+}
+
+.group {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.group h4 {
+  margin: 0 0 8px 0;
+}
+
+label {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+input[type="range"] {
+  width: 160px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.scene,
+.scene canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+button {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background: rgba(255, 255, 255, 0.9);
+  /* Fundo semi-transparente */
+  cursor: pointer;
+  border-radius: 8px;
+  color: #333;
+  /* Cor do texto escura */
+}
+
+button:hover {
+  background: rgba(255, 255, 255, 1);
+  /* Fundo sólido no hover */
+}
+
+/* Adicione estas regras ao final do arquivo */
+.scene {
+  position: relative;
+  overflow: hidden;
+}
+
+.toolbar {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 8px;
+  z-index: 1000;
+  /* Alto z-index para ficar acima do canvas */
+  pointer-events: auto;
+  /* Garante que os botões sejam clicáveis */
+}
+
+.scene>canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  /* Z-index menor que a toolbar */
+}
+
+/* Melhorar visibilidade dos botões */
+button {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background: rgba(255, 255, 255, 0.95);
+  /* Fundo quase branco */
+  cursor: pointer;
+  border-radius: 8px;
+  color: #333;
+  /* Texto escuro */
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  pointer-events: auto;
+  /* Garante que os botões sejam clicáveis */
+}
+
+button:hover {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
