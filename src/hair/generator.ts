@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { type Vector3 } from "three";
-import { useStudio } from "../store/useStudio";
+import { useStudio } from "../store/studio.store";
 
 /** Gera curvas (fios) e retorna um Group com InstancedMeshes de TubeGeometry. */
 export function buildHairGroup(seed = 1): THREE.Group {

@@ -3,11 +3,11 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { buildHairGroup } from "../hair/generator";
-import { useStudio } from "../store/useStudio";
-import { downloadRenderTarget } from "../utils/exportPng";
+import { useStudio } from "../store/studio.store";
 import DSButton from "./ui/ds-button/DSButton";
 import SceneContainer from "./ui/scene-container/SceneContainer";
 import Toolbar from "./ui/toolbar/Toolbar";
+import { ExportPngUtils } from "../utils/export-png.utils";
 
 function SceneSetup({ onSceneReady }: { onSceneReady: (scene: THREE.Scene, camera: THREE.OrthographicCamera) => void }) {
   const { scene, camera } = useThree();
@@ -91,7 +91,7 @@ export default function HairScene() {
     cardPlanes.forEach((c) => (c.visible = true));
     cleanup?.();
 
-    setTimeout(() => downloadRenderTarget(r, target, filename, makeTransparent), 100);
+    setTimeout(() => ExportPngUtils.downloadRenderTarget(r, target, filename, makeTransparent), 100);
   };
 
   const cameraProps = {

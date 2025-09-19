@@ -1,5 +1,5 @@
 // src/components/StudioPanel.tsx
-import { useStudio } from "../store/useStudio";
+import { useStudio } from "../store/studio.store";
 import DSGroup from "./ui/ds-group/DSGroup";
 import LabelRow from "./ui/label-row/LabelRow";
 import Panel from "./ui/panel/Panel";
