@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import * as THREE from "three";
-import { buildHairGroup } from "../../hair/generator";
 import { useStudio } from "../../store/studio.store";
+import { HairBuilder } from "../../hair/hair-builder";
 
 export default function SceneContent() {
   const s = useStudio();
-  const group = useMemo(() => buildHairGroup(1234), [
+  const group = useMemo(() => HairBuilder.build(1234, s), [
     s.baseWidth, s.baseHeight, s.percentage, s.cardsPerSheet, s.marginPx,
     s.hair_amount_offset, s.strand_points_count, s.gradient_color_enabled,
     s.hair_color, s.glossiness, s.sheen,
