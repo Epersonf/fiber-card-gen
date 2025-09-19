@@ -1,0 +1,19 @@
+html, body, #root { height: 100%; margin: 0; }
+* { box-sizing: border-box; }
+
+.wrap { display: grid; grid-template-columns: 360px 1fr; height: 100%; }
+.panel { overflow: auto; border-right: 1px solid #e5e5e5; padding: 12px; }
+.scene { position: relative; }
+
+.toolbar { position: absolute; top: 10px; right: 10px; display: flex; gap: 8px; }
+button { padding: 8px 12px; border: 1px solid #ddd; background: #fff; cursor: pointer; border-radius: 8px; }
+button:hover { background: #f6f6f6; }
+
+.group { border: 1px solid #eee; border-radius: 10px; padding: 10px; margin-bottom: 10px; }
+.group h4 { margin: 0 0 8px 0; }
+
+label { display: flex; justify-content: space-between; gap: 8px; margin: 6px 0; }
+input[type="range"] { width: 160px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+.scene, .scene canvas { width: 100%; height: 100%; display: block; }
+
