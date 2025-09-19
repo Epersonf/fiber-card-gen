@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from "react";
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import * as THREE from "three";
 import { buildHairGroup } from "../hair/generator";
 import { useStudio } from "../store/useStudio";
@@ -8,7 +8,7 @@ import { downloadRenderTarget } from "../utils/exportPng";
 function SceneContent() {
   const s = useStudio();
   const group = useMemo(() => buildHairGroup(1234), [
-    s.baseWidth, s.baseHeight, s.percentage, s.cardsPerSheet, s.cols, s.rows,
+    s.baseWidth, s.baseHeight, s.percentage, s.cardsPerSheet, s.marginPx,
     s.hair_amount_offset, s.strand_points_count, s.gradient_color_enabled,
     s.hair_color, s.glossiness, s.sheen,
     s.root_thickness, s.tip_thickness,
@@ -36,7 +36,7 @@ export default function HairScene() {
   const height = Math.floor(s.baseHeight * s.percentage);
 
   const rendererRef = useRef<THREE.WebGLRenderer>(null!);
-  const sceneRef = useRef<THREE.Scene>(null!);
+  const sceneRef = useRef<THREE.Scene>(new THREE.Scene());
   const colorRT = useMemo(() => new THREE.WebGLRenderTarget(width, height, {
     depthBuffer: false,
     format: THREE.RGBAFormat,

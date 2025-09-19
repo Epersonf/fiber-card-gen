@@ -8,8 +8,6 @@ type StudioState = {
   baseHeight: number;          // ex.: 3000
   percentage: number;          // 0.35..1.5 (35%..150%)
   cardsPerSheet: number;       // default 11
-  cols: number;                // grid cols (auto)
-  rows: number;                // grid rows (auto)
   marginPx: number;
 
   normalSpace: NormalSpace;
@@ -83,8 +81,6 @@ export const useStudio = create<StudioState>((set, get) => ({
   baseHeight: 3000,
   percentage: 1.0,
   cardsPerSheet: 11,
-  cols: 11,
-  rows: 1,
   marginPx: 32,
 
   normalSpace: "tangent",

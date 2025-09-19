@@ -1,9 +1,12 @@
-import React from "react";
 import { useStudio } from "../store/useStudio";
 
 export default function StudioPanel() {
   const s = useStudio();
   const set = useStudio((st) => st.set);
+
+  // Calculate optimal grid layout based on cardsPerSheet
+  const gridCols = Math.ceil(Math.sqrt(s.cardsPerSheet));
+  const gridRows = Math.ceil(s.cardsPerSheet / gridCols);
 
   return (
     <div className="panel">
@@ -21,8 +24,7 @@ export default function StudioPanel() {
         <label>Base Height <input type="number" value={s.baseHeight} onChange={e => set({ baseHeight: +e.target.value })} /></label>
         <label>Percentage <input type="range" min={0.35} max={1.5} step={0.05} value={s.percentage} onChange={e => set({ percentage: +e.target.value })} /> <span>{(s.percentage * 100).toFixed(0)}%</span></label>
         <label>Cards per Sheet <input type="number" min={1} value={s.cardsPerSheet} onChange={e => set({ cardsPerSheet: +e.target.value })} /></label>
-        <label>Grid Cols <input type="number" min={1} value={s.cols} onChange={e => set({ cols: +e.target.value })} /></label>
-        <label>Grid Rows <input type="number" min={1} value={s.rows} onChange={e => set({ rows: +e.target.value })} /></label>
+        <label>Grid Layout <span>{gridCols} × {gridRows}</span></label>
         <label>Margin (px) <input type="number" min={0} value={s.marginPx} onChange={e => set({ marginPx: +e.target.value })} /></label>
         <label>Normal Space
           <select value={s.normalSpace} onChange={e => set({ normalSpace: e.target.value as any })}>
