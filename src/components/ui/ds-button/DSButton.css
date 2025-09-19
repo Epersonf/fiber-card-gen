@@ -1,0 +1,18 @@
+/* src/components/ui/DSButton.css */
+.ds-btn {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background: rgba(255,255,255,.95);
+  cursor: pointer;
+  border-radius: 8px;
+  color: #333;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+.ds-btn:hover {
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.ds-btn.ghost {
+  background: transparent;
+}

@@ -1,17 +1,19 @@
+// src/components/StudioPanel.tsx
 import { useStudio } from "../store/useStudio";
+import DSGroup from "./ui/ds-group/DSGroup";
+import LabelRow from "./ui/label-row/LabelRow";
+import Panel from "./ui/panel/Panel";
 
 export default function StudioPanel() {
   const s = useStudio();
   const set = useStudio((st) => st.set);
 
-  // Calculate optimal grid layout based on cardsPerSheet
   const gridCols = Math.ceil(Math.sqrt(s.cardsPerSheet));
   const gridRows = Math.ceil(s.cardsPerSheet / gridCols);
 
   return (
-    <div className="panel">
-      <div className="group">
-        <h4>Render Options</h4>
+    <Panel>
+      <DSGroup title="Render Options">
         <label>Base Width <input type="number" value={s.baseWidth} onChange={e => set({ baseWidth: +e.target.value })} /></label>
         <label>Base Height <input type="number" value={s.baseHeight} onChange={e => set({ baseHeight: +e.target.value })} /></label>
         <label>Percentage <input type="range" min={0.35} max={1.5} step={0.05} value={s.percentage} onChange={e => set({ percentage: +e.target.value })} /> <span>{(s.percentage * 100).toFixed(0)}%</span></label>
@@ -25,26 +27,24 @@ export default function StudioPanel() {
             <option value="world">world</option>
           </select>
         </label>
-      </div>
+      </DSGroup>
 
-      <div className="group">
-        <h4>Hair Amount</h4>
+      <DSGroup title="Hair Amount">
         <label>Amount <input type="range" min={-50} max={50} value={s.hair_amount_offset} onChange={e => set({ hair_amount_offset: +e.target.value })} /><span>{s.hair_amount_offset}</span></label>
-        <div className="group">
-          <h4>Strand Points</h4>
+        <DSGroup title="Strand Points">
           <label>Points Count <input type="range" min={2} max={25} value={s.strand_points_count} onChange={e => set({ strand_points_count: +e.target.value })} /> <span>{s.strand_points_count}</span></label>
-        </div>
-      </div>
+        </DSGroup>
+      </DSGroup>
 
-      <div className="group">
-        <h4>Hair Color</h4>
+      <DSGroup title="Hair Color">
         <label>
           Gradient Color
           <input type="checkbox" checked={s.gradient_color_enabled} onChange={e => set({ gradient_color_enabled: e.target.checked })} />
         </label>
         {!s.gradient_color_enabled && (
           <label>Color
-            <input type="color"
+            <input
+              type="color"
               value={"#" + [0, 1, 2].map(i => Math.round(s.hair_color[i] * 255).toString(16).padStart(2, "0")).join("")}
               onChange={e => {
                 const hex = e.target.value;
@@ -52,56 +52,51 @@ export default function StudioPanel() {
                 const g = parseInt(hex.slice(3, 5), 16) / 255;
                 const b = parseInt(hex.slice(5, 7), 16) / 255;
                 set({ hair_color: [r, g, b, 1] });
-              }} />
+              }}
+            />
           </label>
         )}
-        <div className="row">
+        <LabelRow>
           <label>Glossiness <input type="range" min={0} max={1} step={0.01} value={s.glossiness} onChange={e => set({ glossiness: +e.target.value })} /> <span>{s.glossiness.toFixed(2)}</span></label>
           <label>Sheen <input type="range" min={0} max={1} step={0.01} value={s.sheen} onChange={e => set({ sheen: +e.target.value })} /> <span>{s.sheen.toFixed(2)}</span></label>
-        </div>
-      </div>
+        </LabelRow>
+      </DSGroup>
 
-      <div className="group">
-        <h4>Hair Strand Thickness</h4>
-        <div className="row">
+      <DSGroup title="Hair Strand Thickness">
+        <LabelRow>
           <label>Root <input type="range" min={0} max={0.07} step={0.001} value={s.root_thickness} onChange={e => set({ root_thickness: +e.target.value })} /></label>
-          <label>Tip <input type="range" min={0} max={0.07} step={0.001} value={s.tip_thickness} onChange={e => set({ tip_thickness: +e.target.value })} /></label>
-        </div>
-      </div>
+          <label>Tip  <input type="range" min={0} max={0.07} step={0.001} value={s.tip_thickness} onChange={e => set({ tip_thickness: +e.target.value })} /></label>
+        </LabelRow>
+      </DSGroup>
 
-      <div className="group">
-        <h4>Hair Length</h4>
+      <DSGroup title="Hair Length">
         <label>Fixed <input type="checkbox" checked={s.fixed_length_size} onChange={e => set({ fixed_length_size: e.target.checked })} /></label>
         {s.fixed_length_size ? (
           <label>Length <input type="range" min={0} max={20} step={0.01} value={s.combined_length} onChange={e => set({ combined_length: +e.target.value })} /></label>
         ) : (
-          <div className="row">
+          <LabelRow>
             <label>Minimum <input type="range" min={0} max={20} step={0.01} value={s.minimum_length} onChange={e => set({ minimum_length: +e.target.value })} /></label>
             <label>Maximum <input type="range" min={0} max={20} step={0.01} value={s.maximum_length} onChange={e => set({ maximum_length: +e.target.value })} /></label>
-          </div>
+          </LabelRow>
         )}
-      </div>
+      </DSGroup>
 
-      <div className="group">
-        <h4>Hair Spread</h4>
+      <DSGroup title="Hair Spread">
         <label>Amount <input type="range" min={-50} max={50} step={0.1} value={s.spread_amount_offset} onChange={e => set({ spread_amount_offset: +e.target.value })} /></label>
-      </div>
+      </DSGroup>
 
-      <div className="group">
-        <h4>Hair Clumping</h4>
-        <div className="row">
+      <DSGroup title="Hair Clumping">
+        <LabelRow>
           <label>Root <input type="range" min={0} max={5000} step={0.01} value={s.clump_root} onChange={e => set({ clump_root: +e.target.value })} /></label>
-          <label>Tip <input type="range" min={0} max={5000} step={0.01} value={s.clump_tip} onChange={e => set({ clump_tip: +e.target.value })} /></label>
-        </div>
-      </div>
+          <label>Tip  <input type="range" min={0} max={5000} step={0.01} value={s.clump_tip} onChange={e => set({ clump_tip: +e.target.value })} /></label>
+        </LabelRow>
+      </DSGroup>
 
-      <div className="group">
-        <h4>Hairline Shape</h4>
+      <DSGroup title="Hairline Shape">
         <label>Hairline Shape <input type="range" min={0} max={1} step={0.01} value={s.hairline_shape} onChange={e => set({ hairline_shape: +e.target.value })} /></label>
-      </div>
+      </DSGroup>
 
-      <div className="group">
-        <h4>Hair Frizz</h4>
+      <DSGroup title="Hair Frizz">
         <label><input type="checkbox" checked={s.enable_frizz_hair} onChange={e => set({ enable_frizz_hair: e.target.checked })} /> Enable Hair Frizz</label>
         {s.enable_frizz_hair && (
           <>
@@ -109,18 +104,16 @@ export default function StudioPanel() {
             <label><input type="checkbox" checked={s.frizz_curve_enabled} onChange={e => set({ frizz_curve_enabled: e.target.checked })} /> Frizz Curve</label>
           </>
         )}
-      </div>
+      </DSGroup>
 
-      <div className="group">
-        <h4>Reduce Hair</h4>
+      <DSGroup title="Reduce Hair">
         <label><input type="checkbox" checked={s.enable_delete_hair} onChange={e => set({ enable_delete_hair: e.target.checked })} /> Enable Reduce Hair</label>
         {s.enable_delete_hair && (
           <label>Amount <input type="range" min={0} max={1} step={0.01} value={s.reduce_amount} onChange={e => set({ reduce_amount: +e.target.value })} /></label>
         )}
-      </div>
+      </DSGroup>
 
-      <div className="group">
-        <h4>Hair Curl</h4>
+      <DSGroup title="Hair Curl">
         <label><input type="checkbox" checked={s.enable_hair_curl} onChange={e => set({ enable_hair_curl: e.target.checked })} /> Enable Hair Curl</label>
         {s.enable_hair_curl && (
           <>
@@ -129,10 +122,9 @@ export default function StudioPanel() {
             <label>Scale <input type="range" min={0} max={2} step={0.01} value={s.curl_scale} onChange={e => set({ curl_scale: +e.target.value })} /></label>
           </>
         )}
-      </div>
+      </DSGroup>
 
-      <div className="group">
-        <h4>Messiness/Roughness</h4>
+      <DSGroup title="Messiness/Roughness">
         <label><input type="checkbox" checked={s.enable_messiness_hair} onChange={e => set({ enable_messiness_hair: e.target.checked })} /> Enable Messiness/Roughness</label>
         {s.enable_messiness_hair && (
           <>
@@ -142,14 +134,13 @@ export default function StudioPanel() {
             <label>Messiness Amount <input type="range" min={0} max={1} step={0.01} value={s.messiness_amount} onChange={e => set({ messiness_amount: +e.target.value })} /></label>
           </>
         )}
-      </div>
+      </DSGroup>
 
-      <div className="group">
-        <h4>Lighting Option</h4>
+      <DSGroup title="Lighting Option">
         <label>Light Source Size <input type="range" min={0.002} max={0.2} step={0.002} value={s.light_source_size} onChange={e => set({ light_source_size: +e.target.value })} /></label>
         <label>Light Source Location <input type="range" min={-20} max={4} step={0.01} value={s.light_source_location} onChange={e => set({ light_source_location: +e.target.value })} /></label>
         <label>Intensity <input type="range" min={0} max={10000} step={1} value={s.light_intensity} onChange={e => set({ light_intensity: +e.target.value })} /></label>
-      </div>
-    </div>
+      </DSGroup>
+    </Panel>
   );
 }

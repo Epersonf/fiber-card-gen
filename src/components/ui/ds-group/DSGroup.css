@@ -1,0 +1,4 @@
+/* src/components/ui/DSGroup.css */
+.ds-group { border:1px solid #eee; border-radius:10px; padding:10px; margin-bottom:10px; }
+.ds-group__title { margin:0 0 8px 0; font-size:14px; }
+.ds-group__content { display:block; }

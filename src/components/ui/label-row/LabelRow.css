@@ -1,0 +1,17 @@
+/* src/components/ui/LabelRow.css */
+.label-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.label-row label {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.label-row input[type="range"] {
+  width: 160px;
+}

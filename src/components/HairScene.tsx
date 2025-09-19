@@ -1,20 +1,19 @@
+// src/components/HairScene.tsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { buildHairGroup } from "../hair/generator";
 import { useStudio } from "../store/useStudio";
 import { downloadRenderTarget } from "../utils/exportPng";
+import DSButton from "./ui/ds-button/DSButton";
+import SceneContainer from "./ui/scene-container/SceneContainer";
+import Toolbar from "./ui/toolbar/Toolbar";
 
-// Componente para capturar a cena e a câmera
 function SceneSetup({ onSceneReady }: { onSceneReady: (scene: THREE.Scene, camera: THREE.OrthographicCamera) => void }) {
   const { scene, camera } = useThree();
-
   useEffect(() => {
-    if (camera instanceof THREE.OrthographicCamera) {
-      onSceneReady(scene, camera);
-    }
+    if (camera instanceof THREE.OrthographicCamera) onSceneReady(scene, camera);
   }, [scene, camera, onSceneReady]);
-
   return null;
 }
 
@@ -32,8 +31,7 @@ function SceneContent() {
     s.enable_messiness_hair, s.messiness_strength, s.messiness_scale, s.messiness_starting_point, s.messiness_amount
   ]);
 
-  // Center the hair group
-  const bbox = useMemo(() => {
+  useMemo(() => {
     const box = new THREE.Box3().setFromObject(group);
     const center = box.getCenter(new THREE.Vector3());
     group.position.sub(center);
@@ -53,43 +51,18 @@ export default function HairScene() {
   const rendererRef = useRef<THREE.WebGLRenderer>(null!);
 
   const colorRT = useMemo(() => new THREE.WebGLRenderTarget(width, height, {
-    depthBuffer: false,
-    format: THREE.RGBAFormat,
-    type: THREE.UnsignedByteType,
-    minFilter: THREE.LinearFilter,
-    magFilter: THREE.LinearFilter,
-    stencilBuffer: false,
+    depthBuffer: false, format: THREE.RGBAFormat, type: THREE.UnsignedByteType,
+    minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, stencilBuffer: false,
   }), [width, height]);
 
   const normalRT = useMemo(() => new THREE.WebGLRenderTarget(width, height, {
-    depthBuffer: false,
-    format: THREE.RGBAFormat,
-    type: THREE.UnsignedByteType,
-    minFilter: THREE.LinearFilter,
-    magFilter: THREE.LinearFilter,
-    stencilBuffer: false,
+    depthBuffer: false, format: THREE.RGBAFormat, type: THREE.UnsignedByteType,
+    minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, stencilBuffer: false,
   }), [width, height]);
 
   useEffect(() => {
-    if (rendererRef.current) {
-      rendererRef.current.setSize(width, height, false);
-    }
+    if (rendererRef.current) rendererRef.current.setSize(width, height, false);
   }, [width, height]);
-
-  const handleSceneReady = (scene: THREE.Scene, camera: THREE.OrthographicCamera) => {
-    setScene(scene);
-    setCamera(camera);
-  };
-
-  const cameraProps = {
-    left: -width / 2,
-    right: width / 2,
-    top: height / 2,
-    bottom: -height / 2,
-    near: -1000,
-    far: 1000,
-    position: [0, 0, 10] as [number, number, number],
-  };
 
   const handleRender = (
     target: THREE.WebGLRenderTarget,
@@ -98,59 +71,46 @@ export default function HairScene() {
     clearAlpha: number,
     setup?: () => void,
     cleanup?: () => void,
-    makeTransparent = true // Novo parâmetro
+    makeTransparent = true
   ) => {
     if (!scene || !camera || !rendererRef.current) return;
-
     const r = rendererRef.current;
 
-    // Coletar e ocultar todos os cardPlanes
     const cardPlanes: THREE.Object3D[] = [];
     scene.traverse((child) => {
-      if (child.userData?.isCardPlane) {
+      if ((child as any).userData?.isCardPlane) {
         cardPlanes.push(child);
         child.visible = false;
       }
     });
 
-    if (setup) setup();
-
+    setup?.();
     r.setRenderTarget(target);
     r.setClearColor(clearColor, clearAlpha);
-    r.clear();
-    r.render(scene, camera);
-    r.setRenderTarget(null);
+    r.clear(); r.render(scene, camera); r.setRenderTarget(null);
+    cardPlanes.forEach((c) => (c.visible = true));
+    cleanup?.();
 
-    // Restaurar a visibilidade dos cardPlanes
-    cardPlanes.forEach(child => {
-      child.visible = true;
-    });
+    setTimeout(() => downloadRenderTarget(r, target, filename, makeTransparent), 100);
+  };
 
-    if (cleanup) cleanup();
-
-    // Forçar um pequeno delay para garantir que o render target esteja pronto
-    setTimeout(() => {
-      downloadRenderTarget(r, target, filename, makeTransparent);
-    }, 100);
+  const cameraProps = {
+    left: -width / 2, right: width / 2, top: height / 2, bottom: -height / 2,
+    near: -1000, far: 1000, position: [0, 0, 10] as [number, number, number],
   };
 
   return (
-    <div className="scene">
-      <div className="toolbar">
-        <button onClick={() => {
-          handleRender(colorRT, "hair_color.png", 0x000000, 0.0, undefined, undefined, true);
-        }}>Render Color</button>
+    <SceneContainer>
+      <Toolbar>
+        <DSButton onClick={() =>
+          handleRender(colorRT, "hair_color.png", 0x000000, 0.0, undefined, undefined, true)
+        }>Render Color</DSButton>
 
-        <button onClick={() => {
+        <DSButton onClick={() => {
           const originalMaterials = new Map<THREE.Mesh, THREE.Material>();
-
           handleRender(
-            normalRT,
-            "hair_normal.png",
-            0x8080ff, // Cor azul para o fundo do normal map
-            1.0,      // Alpha 1.0 (totalmente opaco)
+            normalRT, "hair_normal.png", 0x8080ff, 1.0,
             () => {
-              // Switch to normal material for all meshes
               scene?.traverse((child) => {
                 if (child instanceof THREE.Mesh) {
                   originalMaterials.set(child, child.material);
@@ -159,39 +119,31 @@ export default function HairScene() {
               });
             },
             () => {
-              // Restore original materials
               scene?.traverse((child) => {
                 if (child instanceof THREE.Mesh && originalMaterials.has(child)) {
                   child.material = originalMaterials.get(child)!;
                 }
               });
             },
-            false // Não aplicar transparência para o normal map
+            false
           );
-        }}>Render Normal</button>
-      </div>
+        }}>Render Normal</DSButton>
+      </Toolbar>
 
       <Canvas
-        orthographic
-        camera={cameraProps}
-        dpr={[1, 2]}
-        gl={{
-          preserveDrawingBuffer: true,
-          antialias: true,
-          alpha: true,
-          powerPreference: "high-performance",
-        }}
-        onCreated={({ gl }) => {
+        orthographic camera={cameraProps} dpr={[1, 2]}
+        gl={{ preserveDrawingBuffer: true, antialias: true, alpha: true, powerPreference: "high-performance" }}
+        onCreated={({ gl, scene, camera }) => {
           gl.setClearColor(0x000000, 0);
-          rendererRef.current = gl;
+          (rendererRef as any).current = gl;
         }}
       >
-        <SceneSetup onSceneReady={handleSceneReady} />
+        <SceneSetup onSceneReady={(sc, cam) => { setScene(sc); setCamera(cam); }} />
         <color attach="background" args={["#1e1f22"]} />
         <ambientLight intensity={1.2} />
         <directionalLight position={[0.5, 1, 1]} intensity={0.9} />
         <SceneContent />
       </Canvas>
-    </div>
+    </SceneContainer>
   );
 }
