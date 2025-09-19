@@ -52,8 +52,18 @@ export function buildHairGroup(seed = 1): THREE.Group {
       const strandGroup = new THREE.Group();
 
       for (let i = 0; i < strands; i++) {
-        const curve = makeStrandCurve(points, cellW, cellH, rand, s);
-        const path = new THREE.CatmullRomCurve3(curve);
+        const maxRadiusPx = Math.max(
+          thicknessToRadiusPx(s.root_thickness, cellW),
+          thicknessToRadiusPx(s.tip_thickness, cellW)
+        );
+        const basePad = cellH * 0.09;
+        const padTop = basePad + maxRadiusPx;
+        const padBot = basePad + maxRadiusPx;
+        const usableH = Math.max(1, cellH - padTop - padBot);
+        const curve = makeStrandCurve(points, cellW, usableH, padBot, rand, s);
+        curve[0].y = padBot;
+        curve[curve.length - 1].y = cellH - padTop;
+        const path = new THREE.CatmullRomCurve3(curve, false, "centripetal", 0.0);
         const tubularSegments = points * 3;
         const tube = new THREE.TubeGeometry(
           path,
@@ -87,13 +97,13 @@ export function buildHairGroup(seed = 1): THREE.Group {
 }
 
 /** Gera pontos da curva de um fio, com comprimento, clumping, frizz, curl e messiness aproximados. */
-function makeStrandCurve(points: number, cellW: number, cellH: number, rand: () => number, s = useStudio.getState()): THREE.Vector3[] {
+function makeStrandCurve(points: number, cellW: number, usableH: number, padBot: number, rand: () => number, s = useStudio.getState()): THREE.Vector3[] {
   const arr: Vector3[] = [];
   const len = s.fixed_length_size ? s.combined_length : lerp(s.minimum_length, s.maximum_length, rand());
   const total = Math.max(2, points);
 
   // escalas independentes
-  const yScale = (cellH * 0.82) / Math.max(1e-3, (s.fixed_length_size ? s.combined_length : s.maximum_length || len));
+  const yScale = usableH / Math.max(1e-3, (s.fixed_length_size ? s.combined_length : s.maximum_length || len));
   const xMaxBase = cellW * 0.33; // metade da largura útil do card
 
   for (let i = 0; i < total; i++) {
@@ -123,7 +133,7 @@ function makeStrandCurve(points: number, cellW: number, cellH: number, rand: () 
       : 0;
 
     const x = baseX + curlX + frizz + mess;
-    arr.push(new THREE.Vector3(x, y * yScale, 0));
+    arr.push(new THREE.Vector3(x, padBot + y * yScale, 0));
   }
 
   // leve afunilamento na ponta
