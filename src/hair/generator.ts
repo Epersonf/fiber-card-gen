@@ -2,17 +2,14 @@ import * as THREE from "three";
 import { type Vector3 } from "three";
 import { useStudio } from "../store/useStudio";
 
-/** Gera curvas (fios) e retorna um Group com InstancedMeshes de TubeGeometry. */
 export function buildHairGroup(seed = 1): THREE.Group {
   const s = useStudio.getState();
   const g = new THREE.Group();
 
-  // Quantidade de fios por carta (base 0 + offset)
-  const baseAmount = 18; // valor base “template”; offset aplica delta como no addon
+  const baseAmount = 18;
   const strands = Math.max(1, baseAmount + s.hair_amount_offset);
   const points = Math.max(2, s.strand_points_count);
 
-  // grid de cartas
   const W = s.baseWidth * s.percentage;
   const H = s.baseHeight * s.percentage;
   const cols = Math.max(1, s.cols);
@@ -20,74 +17,67 @@ export function buildHairGroup(seed = 1): THREE.Group {
   const cellW = (W - (cols + 1) * s.marginPx) / cols;
   const cellH = (H - (rows + 1) * s.marginPx) / rows;
 
-  // Geometria base de um fio (usamos TubeGeometry sobre uma curva gerada)
   const radiusRoot = thicknessToRadiusPx(s.root_thickness, cellW);
   const radiusTip = thicknessToRadiusPx(Math.max(0, s.tip_thickness), cellW);
-  const radialSegments = 6;
 
-  // RNG determinístico simples
   const rand = mulberry32(seed);
 
-  // Para cada “carta”
   let cardIdx = 0;
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       if (cardIdx >= s.cardsPerSheet) break;
 
       const card = new THREE.Group();
-      // Plano de fundo “cartão” (apenas referência no preview; não render no export)
-      const cardPlane = new THREE.Mesh(
-        new THREE.PlaneGeometry(cellW, cellH),
-        new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.08 })
-      );
-      cardPlane.position.set(0, 0, 0);
-      card.add(cardPlane);
 
-      // InstancedMesh para fios desta carta
-      const tubeGeo = new THREE.InstancedBufferGeometry();
-      // Notas:
-      //  - Para performance, criamos uma geometria “template” por fio e instanciamos.
-      //  - Como TubeGeometry depende da curva, geramos por-fio e “mergeamos” seria caro.
-      //  - Aqui, criamos Mesh normal por fio. Para grandes quantidades, otimizar com SDF/stroke shader.
-      const strandGroup = new THREE.Group();
+      // Calculate card center position
+      const x = -W / 2 + s.marginPx + cellW / 2 + c * (cellW + s.marginPx);
+      const y = H / 2 - s.marginPx - cellH / 2 - r * (cellH + s.marginPx);
+      card.position.set(x, y, 0);
+
+      // Create hair strands for this card
+      const hairGroup = new THREE.Group();
 
       for (let i = 0; i < strands; i++) {
         const maxRadiusPx = Math.max(
           thicknessToRadiusPx(s.root_thickness, cellW),
           thicknessToRadiusPx(s.tip_thickness, cellW)
         );
+
         const basePad = cellH * 0.09;
         const padTop = basePad + maxRadiusPx;
         const padBot = basePad + maxRadiusPx;
         const usableH = Math.max(1, cellH - padTop - padBot);
+
         const curve = makeStrandCurve(points, cellW, usableH, padBot, rand, s);
-        curve[0].y = padBot;
-        curve[curve.length - 1].y = cellH - padTop;
         const path = new THREE.CatmullRomCurve3(curve, false, "centripetal", 0.0);
-        const tubularSegments = points * 3;
+
         const tube = new THREE.TubeGeometry(
           path,
-          tubularSegments,
+          points * 3,
           lerp(radiusRoot, radiusTip, 0.5),
-          8, // radialSegments
+          8,
           false
         );
+
+        // Center the tube geometry
+        tube.center();
+
         const mat = new THREE.MeshStandardMaterial({
           color: new THREE.Color(...s.hair_color.slice(0, 3) as [number, number, number]),
           metalness: s.glossiness,
           roughness: s.sheen
         });
+
         const mesh = new THREE.Mesh(tube, mat);
-        strandGroup.add(mesh);
+        hairGroup.add(mesh);
       }
 
-      card.add(strandGroup);
+      // Center hair within the card
+      const bbox = new THREE.Box3().setFromObject(hairGroup);
+      const center = bbox.getCenter(new THREE.Vector3());
+      hairGroup.position.sub(center);
 
-      // posiciona a carta na folha (em coordenadas do mundo; a câmera ortho enquadra a folha)
-      const x = -W / 2 + s.marginPx + cellW / 2 + c * (cellW + s.marginPx);
-      const y = H / 2 - s.marginPx - cellH / 2 - r * (cellH + s.marginPx);
-      card.position.set(x, y, 0);
-
+      card.add(hairGroup);
       g.add(card);
       cardIdx++;
     }
