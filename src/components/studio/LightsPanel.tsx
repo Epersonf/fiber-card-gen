@@ -57,7 +57,7 @@ export default function LightsPanel() {
       ))}
       <DSButton onClick={() => addLight({
         type: 'directional',
-        position: [0, 1, -5],
+        position: [0, 0, 5],
         intensity: 3500,
         color: '#ffffff',
         enabled: true
