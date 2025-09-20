@@ -1,3 +1,4 @@
+import { GradientStop } from "./gradient-stop";
 import { Light } from "./light.int";
 import { NormalSpace } from "./normal-space.int";
 
@@ -20,6 +21,7 @@ export type StudioState = {
   // Hair Color
   gradient_color_enabled: boolean;
   hair_color: [number, number, number, number];
+  hair_gradient_stops: GradientStop[];
   glossiness: number; // Metallic
   sheen: number;      // Roughness
 

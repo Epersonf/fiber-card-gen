@@ -1,0 +1,1 @@
+export type GradientStop = { pos: number; color: string };

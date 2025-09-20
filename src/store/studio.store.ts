@@ -25,6 +25,10 @@ export const useStudio = create<StudioState>((set, get) => ({
 
   gradient_color_enabled: false,
   hair_color: [.40, .20, .20, 1],
+  hair_gradient_stops: [
+    { pos: 0, color: '#3b2e1a' },
+    { pos: 1, color: '#d2b48c' },
+  ],
   glossiness: 0.11,
   sheen: 0.30,
 

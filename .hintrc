@@ -10,6 +10,8 @@
       }
     ],
     "button-type": "off",
-    "no-inline-styles": "off"
+    "no-inline-styles": "off",
+    "compat-api/html": "off",
+    "axe/forms": "off"
   }
 }

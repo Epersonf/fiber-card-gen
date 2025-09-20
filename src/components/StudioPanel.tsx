@@ -8,6 +8,8 @@ import Panel from "./ui/panel/Panel";
 import { CollapsiblePanel } from "./ui/collapsible-panel/CollapsiblePanel";
 import DSSlider from "./ui/ds-slider/DSSlider";
 import SizedBox from "./ui/sized-box/SizedBox";
+import LabelColumn from "./ui/label-column/LabelColumn";
+import GradientStopsEditor from "./ui/gradient-stops/GradientStopsEditor";
 
 export default function StudioPanel() {
   const s = useStudio();
@@ -41,25 +43,29 @@ export default function StudioPanel() {
         </CollapsiblePanel>
 
         <CollapsiblePanel title="Hair Color" defaultOpen={false}>
-          <label>
-            Gradient Color
-            <input type="checkbox" checked={s.gradient_color_enabled} onChange={e => set({ gradient_color_enabled: e.target.checked })} />
-          </label>
-          {!s.gradient_color_enabled && (
-            <label>Color
-              <input
-                type="color"
-                value={"#" + [0, 1, 2].map(i => Math.round(s.hair_color[i] * 255).toString(16).padStart(2, "0")).join("")}
-                onChange={e => {
-                  const hex = e.target.value;
-                  const r = parseInt(hex.slice(1, 3), 16) / 255;
-                  const g = parseInt(hex.slice(3, 5), 16) / 255;
-                  const b = parseInt(hex.slice(5, 7), 16) / 255;
-                  set({ hair_color: [r, g, b, 1] });
-                }}
-              />
+          <LabelColumn>
+            <label>
+              Gradient Color
+              <input type="checkbox" checked={s.gradient_color_enabled} onChange={e => set({ gradient_color_enabled: e.target.checked })} />
             </label>
-          )}
+            {s.gradient_color_enabled ? (
+              <GradientStopsEditor />
+            ) : (
+              <label>Color
+                <input
+                  type="color"
+                  value={"#" + [0, 1, 2].map(i => Math.round(s.hair_color[i] * 255).toString(16).padStart(2, "0")).join("")}
+                  onChange={e => {
+                    const hex = e.target.value;
+                    const r = parseInt(hex.slice(1, 3), 16) / 255;
+                    const g = parseInt(hex.slice(3, 5), 16) / 255;
+                    const b = parseInt(hex.slice(5, 7), 16) / 255;
+                    set({ hair_color: [r, g, b, 1] });
+                  }}
+                />
+              </label>
+            )}
+          </LabelColumn>
           <LabelRow>
             <DSSlider label="Glossiness" min={0} max={1} step={0.01} value={s.glossiness} onChange={e => set({ glossiness: +e.target.value })} displayValue={s.glossiness.toFixed(2)} />
             <DSSlider label="Sheen" min={0} max={1} step={0.01} value={s.sheen} onChange={e => set({ sheen: +e.target.value })} displayValue={s.sheen.toFixed(2)} />

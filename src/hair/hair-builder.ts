@@ -6,6 +6,7 @@ import { GroupLayout } from "./group-layout";
 import { StrandFactory } from "./strand-factory";
 import { HairMaterial } from "./hair-material";
 import { StudioState } from "../models/studio.int";
+import chroma from "chroma-js";
 
 export class HairBuilder {
   static build(seed = 1, s: StudioState): THREE.Group {
@@ -18,6 +19,18 @@ export class HairBuilder {
     const totalCards = s.cardsPerSheet;
     const points = Math.max(2, s.strand_points_count);
 
+    // Pré-cria o sampler do gradiente quando habilitado
+    const gradientSampler =
+      s.gradient_color_enabled && s.hair_gradient_stops?.length >= 2
+        ? chroma
+          .scale(s.hair_gradient_stops
+            .sort((a, b) => a.pos - b.pos)
+            .map(st => st.color))
+          .domain([0, 1])
+          // Escolha o espaço que preferir: 'lab' dá blends suaves
+          .mode("lab")
+        : null;
+
     let idx = 0;
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols && idx < totalCards; c++, idx++) {
@@ -28,13 +41,6 @@ export class HairBuilder {
         const strandGroup = new THREE.Group();
 
         for (let k = 0; k < strands; k++) {
-          // ruído base (mantido)
-          const _rk = new THREE.Vector3(
-            (cardRand() - 0.5) * 2,
-            (cardRand() - 0.5) * 2,
-            (cardRand() - 0.5) * 2
-          );
-
           const maxRadiusPx = Math.max(
             ThicknessUtils.toRadiusPx(s.root_thickness, cellW),
             ThicknessUtils.toRadiusPx(s.tip_thickness, cellW)
@@ -82,9 +88,9 @@ export class HairBuilder {
             for (let j = 0; j < vertsPerRing; j++) {
               const idx3 = (iRing * vertsPerRing + j) * 3;
 
-              const x = P.array[idx3 + 0];
-              const y = P.array[idx3 + 1];
-              const z = P.array[idx3 + 2];
+              const x = (P.array as any)[idx3 + 0];
+              const y = (P.array as any)[idx3 + 1];
+              const z = (P.array as any)[idx3 + 2];
 
               // vetor do centro ao vértice
               const vx = x - center.x;
@@ -93,15 +99,36 @@ export class HairBuilder {
               const len = Math.hypot(vx, vy, vz) || 1;
 
               // normaliza e aplica novo raio
-              P.array[idx3 + 0] = center.x + (vx / len) * ri;
-              P.array[idx3 + 1] = center.y + (vy / len) * ri;
-              P.array[idx3 + 2] = center.z + (vz / len) * ri;
+              (P.array as any)[idx3 + 0] = center.x + (vx / len) * ri;
+              (P.array as any)[idx3 + 1] = center.y + (vy / len) * ri;
+              (P.array as any)[idx3 + 2] = center.z + (vz / len) * ri;
             }
           }
 
           P.needsUpdate = true;
           geom.computeVertexNormals();
           geom.computeBoundingSphere();
+
+          // ------ GRADIENTE POR VÉRTICE (root -> tip) ------
+          if (gradientSampler) {
+            const colors = new Float32Array((rings * vertsPerRing) * 3);
+            for (let iRing = 0; iRing < rings; iRing++) {
+              const t = iRing / (rings - 1);
+              const [rCol, gCol, bCol] = gradientSampler(t).rgb(); // 0..255
+              const R = rCol / 255, G = gCol / 255, B = bCol / 255;
+
+              for (let j = 0; j < vertsPerRing; j++) {
+                const idx3 = (iRing * vertsPerRing + j) * 3;
+                colors[idx3 + 0] = R;
+                colors[idx3 + 1] = G;
+                colors[idx3 + 2] = B;
+              }
+            }
+            geom.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+          } else if (geom.getAttribute("color")) {
+            geom.deleteAttribute("color");
+          }
+          // -----------------------------------------------
 
           const mesh = new THREE.Mesh(geom, HairMaterial.standard(s));
           mesh.castShadow = true;
