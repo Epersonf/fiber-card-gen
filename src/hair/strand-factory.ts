@@ -106,7 +106,7 @@ export class StrandFactory {
         const kappa = s.messiness_scale;
         const qx = i + frizzOffX;
         const qy = kappa * s_t + frizzOffY;
-        const n = NoiseUtils.fbm(qx, qy);
+        const n = NoiseUtils.fbm2(qx, qy);
         const centered = 2 * n - 1;
         const env = s.frizz_curve_enabled ? FrizzUtils.evalCurve(t, s.frizz_curve_points) : 1;
         o_frizz = new THREE.Vector3(centered, centered, centered).multiplyScalar(s.frizz_scale * env);
