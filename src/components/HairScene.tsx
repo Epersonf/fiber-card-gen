@@ -14,6 +14,7 @@ import Controls3D from "./scene/controls/Controls3D";
 import { useRenderTargets } from "./scene/render/useRenderTargets";
 import { SceneRendererUtils } from "../utils/scene-renderer.utils";
 import LightGizmos from "./scene/LightGizmos";
+import SpawnPlaneGizmo from "./scene/SpawnPlaneGizmo";
 
 export default function HairScene() {
   const s = useStudio();
@@ -101,6 +102,7 @@ export default function HairScene() {
         <color attach="background" args={[bg]} />
         <Lights />
         <LightGizmos enabled={viewMode === "3D"} />
+        <SpawnPlaneGizmo enabled={viewMode === "3D"} />
         <SceneContent />
       </Canvas>
     </SceneContainer>
