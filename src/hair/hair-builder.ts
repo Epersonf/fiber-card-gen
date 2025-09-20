@@ -13,9 +13,8 @@ export class HairBuilder {
 
     const { cellW, cellH, cols, rows, W, H } = GroupLayout.computeCell(s);
 
-    // Calcular quantidade base de fios
     const baseStrands = Math.max(1, 18 + s.hair_amount_offset);
-    const minStrands = Math.max(1, Math.floor(baseStrands * 0.05)); // Mínimo 30% dos fios
+    const minStrands = Math.max(1, Math.floor(baseStrands * 0.05));
     const maxStrands = baseStrands;
 
     const totalCards = s.cardsPerSheet;
@@ -24,16 +23,19 @@ export class HairBuilder {
     let idx = 0;
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols && idx < totalCards; c++, idx++) {
-        // Calcular quantidade progressiva de fios
         const progress = idx / (totalCards - 1);
         const strands = Math.floor(THREE.MathUtils.lerp(minStrands, maxStrands, progress));
 
         const card = new THREE.Group();
-        const cardRand = RNGUtils.mulberry32(seed + idx); // Semente única por card
+        const cardRand = RNGUtils.mulberry32(seed + idx); // semente única por card
 
         const strandGroup = new THREE.Group();
 
         for (let i = 0; i < strands; i++) {
+          // variações por fio (bias em Z e leve torção Y)
+          const strandZBias = (cardRand() - 0.5) * cellW * 0.05; // ~5% da largura
+          const strandTwistY = (cardRand() - 0.5) * 0.25;        // +/- ~14°
+
           const maxRadiusPx = Math.max(
             ThicknessUtils.toRadiusPx(s.root_thickness, cellW),
             ThicknessUtils.toRadiusPx(s.tip_thickness, cellW)
@@ -47,7 +49,10 @@ export class HairBuilder {
           curve[0].y = padBot;
           curve[curve.length - 1].y = cellH - padTop;
 
-          const path = new THREE.CatmullRomCurve3(curve, false, "centripetal", 0.0);
+          // aplica bias em Z ao caminho
+          const curveBiased = curve.map(p => new THREE.Vector3(p.x, p.y, p.z + strandZBias));
+
+          const path = new THREE.CatmullRomCurve3(curveBiased, false, "centripetal", 0.0);
           const tubularSegments = points * 3;
           const radius = MathUtils.lerp(
             ThicknessUtils.toRadiusPx(s.root_thickness, cellW),
@@ -62,6 +67,9 @@ export class HairBuilder {
           tube.translate(-center.x, -center.y, -center.z);
 
           const mesh = new THREE.Mesh(tube, HairMaterial.standard(s));
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
+          mesh.rotation.y += strandTwistY; // torção leve
           strandGroup.add(mesh);
         }
 

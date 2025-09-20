@@ -20,6 +20,9 @@ export class StrandFactory {
     const yScale = usableH / Math.max(1e-3, (s.fixed_length_size ? s.combined_length : s.maximum_length) || len);
     const xMaxBase = cellW * 0.33;
 
+    // escala base para profundidade
+    const zScaleBase = cellW * 0.06;
+
     for (let i = 0; i < total; i++) {
       const t = i / (total - 1);
       const y = t * len;
@@ -38,8 +41,30 @@ export class StrandFactory {
           ? (rand() - 0.5) * (s.messiness_strength * 0.02) * xMaxBase
           : 0;
 
+      // X como antes
       const x = baseX + curlX + frizz + mess;
-      arr.push(new THREE.Vector3(x, padBot + y * yScale, 0));
+
+      // --------- NOVO: profundidade (Z) ---------
+      const curlZ = s.enable_hair_curl
+        ? (s.curl_amount * 0.02 * xMaxBase) *
+        Math.cos(t * Math.PI * Math.max(0.0001, s.curl_scale * 4 + s.curl_count)) * 0.5
+        : 0;
+
+      const frizzZ =
+        ((rand() - 0.5) * (s.enable_frizz_hair ? s.frizz_scale : 0) * 0.03 * xMaxBase) *
+        (s.frizz_curve_enabled ? FrizzUtils.evalCurve(t, s.frizz_curve_points) : t) * 0.5;
+
+      const messZ =
+        s.enable_messiness_hair && t >= s.messiness_starting_point
+          ? (rand() - 0.5) * (s.messiness_strength * 0.02) * xMaxBase * 0.5
+          : 0;
+
+      const spreadZ = (rand() - 0.5) * zScaleBase * (1 - clumpT) * 0.6;
+
+      const z = spreadZ + curlZ + frizzZ + messZ;
+      // ------------------------------------------
+
+      arr.push(new THREE.Vector3(x, padBot + y * yScale, z));
     }
 
     // leve afunilamento na ponta

@@ -77,6 +77,7 @@ export default function HairScene() {
       <ViewModeToggle viewMode={viewMode} setViewMode={setViewMode} />
 
       <Canvas
+        shadows
         key={viewMode}
         orthographic={cameraProps.orthographic}
         camera={cameraProps.camera as any}
@@ -87,6 +88,8 @@ export default function HairScene() {
           gl.toneMapping = THREE.ACESFilmicToneMapping;
           gl.toneMappingExposure = 0.7;
           rendererRef.current = gl;
+          gl.shadowMap.enabled = true;
+          gl.shadowMap.type = THREE.VSMShadowMap;
           setScene(scene);
           setCamera(camera);
         }}
