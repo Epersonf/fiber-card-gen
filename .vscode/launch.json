@@ -5,16 +5,16 @@
       "name": "React CRA: Start + Chrome",
       "configurations": [
         "CRA: npm start",
-        "Chrome: http://localhost:3000"
+        "Edge: http://localhost:3000"
       ],
       "preLaunchTask": "npm: start"
     }
   ],
   "configurations": [
     {
-      "type": "pwa-chrome",
+      "type": "msedge",
       "request": "launch",
-      "name": "Chrome: http://localhost:3000",
+      "name": "Edge: http://localhost:3000",
       "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}/src",
       "sourceMaps": true
