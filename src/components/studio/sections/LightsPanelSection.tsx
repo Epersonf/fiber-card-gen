@@ -1,8 +1,8 @@
-import { useStudio } from "../../store/studio.store";
-import { CollapsiblePanel } from "../ui/collapsible-panel/CollapsiblePanel";
-import DSButton from "../ui/ds-button/DSButton";
-import DSGroup from "../ui/ds-group/DSGroup";
-import LabelRow from "../ui/label-row/LabelRow";
+import { useStudio } from "../../../store/studio.store";
+import { CollapsiblePanel } from "../../ui/collapsible-panel/CollapsiblePanel";
+import DSButton from "../../ui/ds-button/DSButton";
+import DSGroup from "../../ui/ds-group/DSGroup";
+import LabelRow from "../../ui/label-row/LabelRow";
 
 export default function LightsPanelSection() {
   const { lights, addLight, updateLight, removeLight } = useStudio();

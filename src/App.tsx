@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import StudioPanel from "./components/StudioPanel";
+import StudioPanel from "./components/studio/StudioPanel";
 import HairScene from "./components/HairScene";
 import "./App.css";
 import { useStudio } from "./store/studio.store";
