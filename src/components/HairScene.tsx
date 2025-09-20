@@ -10,6 +10,9 @@ import DragPan from "./scene/DragPan";
 import SceneContent from "./scene/SceneContent";
 import RenderToolbar from "./scene/RenderToolbar";
 import Lights from "./scene/Lights";
+import { OrbitControls } from "@react-three/drei";
+import ViewModeToggle from "./scene/ViewModeToggle";
+import CameraReset from "./scene/CameraReset";
 
 export default function HairScene() {
   const s = useStudio();
@@ -19,8 +22,10 @@ export default function HairScene() {
   const viewH = s.baseHeight;
 
   const [scene, setScene] = useState<THREE.Scene | null>(null);
-  const [camera, setCamera] = useState<THREE.OrthographicCamera | null>(null);
+  const [camera, setCamera] = useState<THREE.Camera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer>(null!);
+  const [viewMode, setViewMode] = useState<'2D' | '3D'>('2D');
+  const [cameraKey, setCameraKey] = useState(0); // Key para forçar reset da câmera
 
   const colorRT = useMemo(
     () =>
@@ -109,21 +114,38 @@ export default function HairScene() {
     );
   };
 
-  const cameraProps = {
+  const handleViewModeChange = (newMode: '2D' | '3D') => {
+    setViewMode(newMode);
+    setCameraKey(prev => prev + 1); // Forçar reset da câmera
+  };
+
+  const cameraProps = viewMode === '2D' ? {
     left: -viewW / 2,
     right: viewW / 2,
     top: viewH / 2,
     bottom: -viewH / 2,
-    near: -1000,
-    far: 1000,
+    near: -10000, // Aumentado para evitar culling
+    far: 10000,   // Aumentado para evitar culling
     position: [0, 0, 10] as [number, number, number],
+  } : {
+    fov: 60,
+    near: 0.1,
+    far: 100000,   // Aumentado para evitar culling
+    position: [0, 0, 200] as [number, number, number], // Posição mais distante
   };
 
   return (
     <SceneContainer>
-      <RenderToolbar onRenderColor={renderColor} onRenderNormal={renderNormal} />
+      <RenderToolbar 
+        onRenderColor={renderColor} 
+        onRenderNormal={renderNormal}
+        viewMode={viewMode}
+        setViewMode={handleViewModeChange}
+      />
+      <ViewModeToggle viewMode={viewMode} setViewMode={handleViewModeChange} />
       <Canvas
-        orthographic
+        key={cameraKey} // Forçar recriação do Canvas quando a key mudar
+        orthographic={viewMode === '2D'}
         camera={cameraProps}
         dpr={[1, 2]}
         gl={{
@@ -132,16 +154,31 @@ export default function HairScene() {
           alpha: true,
           powerPreference: "high-performance",
         }}
-        onCreated={({ gl, scene }) => {
+        onCreated={({ gl, scene, camera }) => {
           gl.setClearColor(0x000000, 0);
-          gl.toneMapping = THREE.ACESFilmicToneMapping;  // ← Melhor tom mapping
-          gl.toneMappingExposure = 0.7;  // ← Exposição ajustável
+          gl.toneMapping = THREE.ACESFilmicToneMapping;
+          gl.toneMappingExposure = 0.7;
           (rendererRef as any).current = gl;
+          setScene(scene);
+          setCamera(camera);
         }}
       >
+        <CameraReset viewMode={viewMode} />
         <SceneSetup onSceneReady={(sc, cam) => { setScene(sc); setCamera(cam); }} />
-        <WheelZoom />
-        <DragPan />
+        {viewMode === '2D' ? (
+          <>
+            <WheelZoom />
+            <DragPan />
+          </>
+        ) : (
+          <OrbitControls 
+            enablePan={true}
+            enableZoom={true}
+            enableRotate={true}
+            minDistance={50}
+            maxDistance={50000}
+          />
+        )}
         <color attach="background" args={["#1e1f22"]} />
         <Lights />
         <SceneContent />
