@@ -15,6 +15,7 @@ import { useRenderTargets } from "./scene/render/useRenderTargets";
 import { SceneRendererUtils } from "../utils/scene-renderer.utils";
 import LightGizmos from "./scene/LightGizmos";
 import SpawnPlaneGizmo from "./scene/SpawnPlaneGizmo";
+import FrameGizmo2D from "./scene/FrameGizmo2D";
 
 export default function HairScene() {
   const s = useStudio();
@@ -50,26 +51,12 @@ export default function HairScene() {
         onRenderColor={() => {
           if (scene && rendererRef.current) {
             // Export sempre com visão 2D padrão e resolução da store
-            SceneRendererUtils.renderColor2DDefault(
-              scene,
-              rendererRef.current,
-              colorRT,
-              viewW,
-              viewH,
-              bg
-            );
+            SceneRendererUtils.renderColor2DDefault(scene, rendererRef.current, colorRT, exportW, exportH, bg);
           }
         }}
         onRenderNormal={() => {
           if (scene && rendererRef.current) {
-            SceneRendererUtils.renderNormal2DDefault(
-              scene,
-              rendererRef.current,
-              normalRT,
-              viewW,
-              viewH,
-              bg
-            );
+            SceneRendererUtils.renderNormal2DDefault(scene, rendererRef.current, normalRT, exportW, exportH, bg);
           }
         }}
         viewMode={viewMode}
@@ -103,6 +90,7 @@ export default function HairScene() {
         <Lights />
         <LightGizmos enabled={viewMode === "3D"} />
         <SpawnPlaneGizmo enabled={viewMode === "3D"} />
+        {viewMode === "2D" && <FrameGizmo2D targetW={exportW} targetH={exportH} />}
         <SceneContent />
       </Canvas>
     </SceneContainer>
