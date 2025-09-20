@@ -31,13 +31,6 @@ export class HairBuilder {
         const card = new THREE.Group();
         const cardRand = RNGUtils.mulberry32(seed + idx); // Semente única por card
 
-        const cardPlane = new THREE.Mesh(
-          new THREE.PlaneGeometry(cellW, cellH),
-          new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.08 })
-        );
-        (cardPlane as any).userData = { isCardPlane: true };
-        card.add(cardPlane);
-
         const strandGroup = new THREE.Group();
 
         for (let i = 0; i < strands; i++) {
