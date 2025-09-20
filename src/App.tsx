@@ -18,7 +18,6 @@ const ALLOWED_KEYS: (keyof StudioState)[] = [
   "enable_delete_hair", "reduce_amount",
   "enable_hair_curl", "curl_count", "curl_amount", "curl_scale",
   "enable_messiness_hair", "messiness_strength", "messiness_scale", "messiness_starting_point", "messiness_amount",
-  "light_source_location", "light_intensity",
   "spawn_enabled", "spawn_radius_ratio", "spawn_tilt_deg",
   "curl_shape",
 ];

@@ -7,7 +7,7 @@ export const useStudio = create<StudioState>((set, get) => ({
       id: 'DEFAULT',
       type: 'directional',
       position: [0, 10, 5],
-      intensity: 3500,
+      intensity: 10000,
       color: '#ffffff',
       enabled: true,
     },
@@ -20,26 +20,26 @@ export const useStudio = create<StudioState>((set, get) => ({
   cardsPerSheet: 11,
   marginPx: 0,
 
-  hair_amount_offset: 0,
-  strand_points_count: 8,
+  hair_amount_offset: 50,
+  strand_points_count: 25,
 
   gradient_color_enabled: false,
-  hair_color: [1, 1, 1, 1],
+  hair_color: [.40, .20, .20, 1],
   glossiness: 0.11,
   sheen: 0.30,
 
-  root_thickness: 0.01,
+  root_thickness: 0.02,
   tip_thickness: 0.00,
 
   fixed_length_size: true,
-  combined_length: 13.46,
+  combined_length: 20,
   minimum_length: 1,
   maximum_length: 14,
 
   spread_amount_offset: 22.4,
 
-  clump_root: 3453.12,
-  clump_tip: 1235.96,
+  clump_root: 0,
+  clump_tip: 0,
 
   hairline_shape: 0.0,
 
@@ -61,9 +61,6 @@ export const useStudio = create<StudioState>((set, get) => ({
   messiness_scale: 1.0,
   messiness_starting_point: 0.0,
   messiness_amount: 0.0,
-
-  light_source_location: -7.34,
-  light_intensity: 3500,
   curl_shape: 0.0,
 
   spawn_enabled: true,

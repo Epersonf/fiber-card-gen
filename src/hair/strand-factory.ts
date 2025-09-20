@@ -23,8 +23,12 @@ export class StrandFactory {
       : MathUtils.lerp(s.minimum_length, s.maximum_length, rand());
 
     // 3) Altura-alvo dentro da célula (0..usableH)
-    const MAX_UI = s.fixed_length_size ? 20 : Math.max(1e-3, s.maximum_length);
-    const localHeight = MathUtils.clamp(L / MAX_UI, 0, 1) * usableH;
+    const REF = 20; // ou torne configurável
+    const localFrac = MathUtils.clamp(L / Math.max(1e-6, REF), 0, 1);
+
+    // aplica piso de 0.1 (10% da célula)
+    const minFrac = 0.1;
+    const localHeight = THREE.MathUtils.lerp(minFrac * usableH, usableH, localFrac);
 
     // Topo (pivot) e fundo da célula
     const yTop = padBot + usableH;

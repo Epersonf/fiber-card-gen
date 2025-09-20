@@ -66,10 +66,6 @@ export type StudioState = {
   messiness_starting_point: number;
   messiness_amount: number;
 
-  // Luz
-  light_source_location: number;
-  light_intensity: number;
-
   spawn_enabled: boolean;
   spawn_radius_ratio: number; // relativo à largura da célula
   spawn_tilt_deg: number;
