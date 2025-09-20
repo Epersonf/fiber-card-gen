@@ -1,8 +1,63 @@
+import { useEffect } from "react";
 import StudioPanel from "./components/StudioPanel";
 import HairScene from "./components/HairScene";
 import "./App.css";
+import { useStudio } from "./store/studio.store";
+import type { StudioState } from "./models/studio.int";
+
+const ALLOWED_KEYS: (keyof StudioState)[] = [
+  "lights",
+  "baseWidth", "baseHeight", "percentage", "cardsPerSheet", "marginPx",
+  "normalSpace",
+  "hair_amount_offset", "strand_points_count",
+  "gradient_color_enabled", "hair_color", "glossiness", "sheen",
+  "root_thickness", "tip_thickness",
+  "fixed_length_size", "combined_length", "minimum_length", "maximum_length",
+  "spread_amount_offset", "clump_root", "clump_tip",
+  "hairline_shape",
+  "enable_frizz_hair", "frizz_scale", "frizz_curve_enabled", "frizz_curve_points",
+  "enable_delete_hair", "reduce_amount",
+  "enable_hair_curl", "curl_count", "curl_amount", "curl_scale",
+  "enable_messiness_hair", "messiness_strength", "messiness_scale", "messiness_starting_point", "messiness_amount",
+  "light_source_location", "light_intensity",
+  "spawn_enabled", "spawn_radius_ratio", "spawn_tilt_deg",
+  "curl_shape",
+];
 
 export default function App() {
+  useEffect(() => {
+    const onPaste = (e: ClipboardEvent) => {
+      const text = e.clipboardData?.getData("text");
+      if (!text) return;
+
+      try {
+        const raw = JSON.parse(text);
+        if (!raw || typeof raw !== "object") return;
+
+        const next: Partial<StudioState> = {};
+        for (const k of ALLOWED_KEYS) {
+          if (Object.prototype.hasOwnProperty.call(raw, k)) {
+            next[k] = raw[k];
+          }
+        }
+
+        // garante id nas lights
+        if (Array.isArray(next.lights)) {
+          next.lights = next.lights.map((l: any) => ({
+            ...l,
+            id: l?.id ?? Math.random().toString(36).slice(2, 9),
+          }));
+        }
+
+        useStudio.getState().set(next);
+      } catch {
+      }
+    };
+
+    window.addEventListener("paste", onPaste as any);
+    return () => window.removeEventListener("paste", onPaste as any);
+  }, []);
+
   return (
     <div className="wrap">
       <StudioPanel />

@@ -119,8 +119,6 @@ export class StrandFactory {
       ));
     }
 
-    // (opcional) leve afunilamento geométrico
-    arr[arr.length - 1].x *= 0.8;
     return arr;
   }
 
