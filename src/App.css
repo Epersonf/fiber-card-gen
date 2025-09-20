@@ -1,21 +1,71 @@
 /* Variáveis globais para modo escuro */
 :root {
-	--font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-	--color-bg: #181a20;
-	--color-panel: #23262f;
-	--color-border: #2c2f3a;
-	--color-text: #e3e6ed;
-	--color-accent: #4f8cff;
-	--color-accent-hover: #3574e0;
-	--color-disabled: #444857;
+  --font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  --color-bg: #181a20;
+  --color-panel: #23262f;
+  --color-border: #2c2f3a;
+  --color-text: #e3e6ed;
+  --color-accent: #4f8cff;
+  --color-accent-hover: #3574e0;
+  --color-disabled: #444857;
 }
 
-html, body, #root {
-	height: 100%;
-	margin: 0;
-	background: var(--color-bg);
-	color: var(--color-text);
-	font-family: var(--font-family);
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-family);
 }
-* { box-sizing: border-box; }
-.wrap { display: grid; grid-template-columns: 360px 1fr; height: 100%; }
+
+* {
+  box-sizing: border-box;
+}
+
+.wrap {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  height: 100%;
+}
+
+/* Scrollbar – Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-disabled) var(--color-panel);
+}
+
+/* Scrollbar – WebKit (Chromium/Safari) */
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--color-panel);
+  border-left: 1px solid var(--color-border);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--color-disabled);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .05),
+    inset 0 -1px 0 rgba(0, 0, 0, .15);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+}
+
+*::-webkit-scrollbar-corner {
+  background: var(--color-panel);
+}

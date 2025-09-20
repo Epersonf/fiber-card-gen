@@ -3,5 +3,5 @@ import React from "react";
 import "./Panel.css";
 
 export default function Panel({ children }: { children: React.ReactNode }) {
-  return <aside className="panel">{children}</aside>;
+  return <aside className="panel" style={{ padding: "8px" }}>{children}</aside>;
 }

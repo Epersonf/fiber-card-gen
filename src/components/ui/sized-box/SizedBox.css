@@ -1,0 +1,6 @@
+.sized-box {
+  display: block;
+}
+.sized-box.inline {
+  display: inline-block;
+}

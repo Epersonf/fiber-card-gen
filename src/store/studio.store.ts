@@ -6,7 +6,7 @@ export const useStudio = create<StudioState>((set, get) => ({
     {
       id: 'DEFAULT',
       type: 'directional',
-      position: [0, 0, 5],
+      position: [0, 10, 5],
       intensity: 3500,
       color: '#ffffff',
       enabled: true,
