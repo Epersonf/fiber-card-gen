@@ -20,7 +20,6 @@ export const useStudio = create<StudioState>((set, get) => ({
   cardsPerSheet: 9,
   marginPx: 0,
 
-  hair_amount_offset: 50,
   strand_points_count: 25,
 
   gradient_color_enabled: false,
@@ -71,6 +70,10 @@ export const useStudio = create<StudioState>((set, get) => ({
   spawn_radius_ratio_x: 0.12,
   spawn_radius_ratio_y: 0.04,
   spawn_tilt_deg: -6,
+
+  hair_amount_max: 80,
+  hair_amount_min_percent: 0.06,
+  hair_amount_curve: 'quad',
 
   set: (s) => set(s),
   addLight: (light) => set((state) => ({

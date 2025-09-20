@@ -1,6 +1,4 @@
 // src/components/StudioPanel.tsx
-
-
 import { useStudio } from "../store/studio.store";
 import LightsPanel from "./studio/LightsPanel";
 import LabelRow from "./ui/label-row/LabelRow";
@@ -34,12 +32,83 @@ export default function StudioPanel() {
           <label>Margin (px) <input type="number" min={0} value={s.marginPx} onChange={e => set({ marginPx: +e.target.value })} /></label>
         </CollapsiblePanel>
 
-        <CollapsiblePanel title="Hair Amount" defaultOpen={false}>
-          <DSSlider label="Amount" min={-50} max={50} value={s.hair_amount_offset} onChange={e => set({ hair_amount_offset: +e.target.value })} displayValue={s.hair_amount_offset} />
-          <SizedBox height={10} />
-          <CollapsiblePanel title="Strand Points" defaultOpen={false}>
-            <DSSlider label="Points Count" min={2} max={25} value={s.strand_points_count} onChange={e => set({ strand_points_count: +e.target.value })} displayValue={s.strand_points_count} />
-          </CollapsiblePanel>
+        <CollapsiblePanel title="Spawn & Amount" defaultOpen>
+          <label>
+            Enabled
+            <input
+              type="checkbox"
+              checked={s.spawn_enabled}
+              onChange={e => set({ spawn_enabled: e.target.checked })}
+            />
+          </label>
+          <LabelRow>
+            <DSSlider
+              label="Radius X"
+              min={0}
+              max={0.5}
+              step={0.005}
+              value={s.spawn_radius_ratio_x}
+              onChange={e => set({ spawn_radius_ratio_x: +e.target.value })}
+              displayValue={(s.spawn_radius_ratio_x * 100).toFixed(1) + '%'}
+            />
+            <DSSlider
+              label="Radius Y"
+              min={0}
+              max={0.5}
+              step={0.005}
+              value={s.spawn_radius_ratio_y}
+              onChange={e => set({ spawn_radius_ratio_y: +e.target.value })}
+              displayValue={(s.spawn_radius_ratio_y * 100).toFixed(1) + '%'}
+            />
+            <DSSlider
+              label="Tilt (deg)"
+              min={-45}
+              max={45}
+              step={0.5}
+              value={s.spawn_tilt_deg}
+              onChange={e => set({ spawn_tilt_deg: +e.target.value })}
+              displayValue={s.spawn_tilt_deg.toFixed(1) + '°'}
+            />
+          </LabelRow>
+
+          <LabelRow>
+            <label>
+              Hair Amount Max
+              <input
+                type="number"
+                min={1}
+                step={1}
+                value={s.hair_amount_max}
+                onChange={e => set({ hair_amount_max: Math.max(1, Math.floor(+e.target.value || 1)) })}
+              />
+            </label>
+            <DSSlider
+              label="First Card %"
+              min={0}
+              max={1}
+              step={0.01}
+              value={s.hair_amount_min_percent}
+              onChange={e => set({ hair_amount_min_percent: +e.target.value })}
+              displayValue={(s.hair_amount_min_percent * 100).toFixed(0) + '%'}
+            />
+          </LabelRow>
+          <LabelRow>
+            <label>
+              Curve
+              <select
+                value={s.hair_amount_curve}
+                onChange={e => set({ hair_amount_curve: e.target.value as any })}
+              >
+                <option value="linear">Linear</option>
+                <option value="quad">Quadratic (t²)</option>
+                <option value="sqrt">Sqrt (√t)</option>
+              </select>
+            </label>
+          </LabelRow>
+        </CollapsiblePanel>
+
+        <CollapsiblePanel title="Strand Points" defaultOpen={false}>
+          <DSSlider label="Points Count" min={2} max={25} value={s.strand_points_count} onChange={e => set({ strand_points_count: +e.target.value })} displayValue={s.strand_points_count} />
         </CollapsiblePanel>
 
         <CollapsiblePanel title="Hair Color" defaultOpen={false}>
@@ -134,60 +203,6 @@ export default function StudioPanel() {
             </>
           )}
         </CollapsiblePanel>
-
-        <CollapsiblePanel title="Messiness/Roughness" defaultOpen={false}>
-          <label><input type="checkbox" checked={s.enable_messiness_hair} onChange={e => set({ enable_messiness_hair: e.target.checked })} /> Enable Messiness/Roughness</label>
-          {s.enable_messiness_hair && (
-            <>
-              <DSSlider label="Strength" min={0} max={10} step={0.01} value={s.messiness_strength} onChange={e => set({ messiness_strength: +e.target.value })} />
-              <DSSlider label="Scale" min={0.01} max={10} step={0.01} value={s.messiness_scale} onChange={e => set({ messiness_scale: +e.target.value })} />
-              <DSSlider label="Starting Point" min={0} max={1} step={0.01} value={s.messiness_starting_point} onChange={e => set({ messiness_starting_point: +e.target.value })} />
-              <DSSlider label="Messiness Amount" min={0} max={1} step={0.01} value={s.messiness_amount} onChange={e => set({ messiness_amount: +e.target.value })} />
-            </>
-          )}
-        </CollapsiblePanel>
-
-        <CollapsiblePanel title="Spawn Plane" defaultOpen={false}>
-          <label>
-            Enabled
-            <input
-              type="checkbox"
-              checked={s.spawn_enabled}
-              onChange={e => set({ spawn_enabled: e.target.checked })}
-            />
-          </label>
-
-          <LabelRow>
-            <DSSlider
-              label="Radius X"
-              min={0}
-              max={0.5}
-              step={0.005}
-              value={s.spawn_radius_ratio_x}
-              onChange={e => set({ spawn_radius_ratio_x: +e.target.value })}
-              displayValue={(s.spawn_radius_ratio_x * 100).toFixed(1) + '%'}
-            />
-            <DSSlider
-              label="Radius Y"
-              min={0}
-              max={0.5}
-              step={0.005}
-              value={s.spawn_radius_ratio_y}
-              onChange={e => set({ spawn_radius_ratio_y: +e.target.value })}
-              displayValue={(s.spawn_radius_ratio_y * 100).toFixed(1) + '%'}
-            />
-            <DSSlider
-              label="Tilt (deg)"
-              min={-45}
-              max={45}
-              step={0.5}
-              value={s.spawn_tilt_deg}
-              onChange={e => set({ spawn_tilt_deg: +e.target.value })}
-              displayValue={s.spawn_tilt_deg.toFixed(1) + '°'}
-            />
-          </LabelRow>
-        </CollapsiblePanel>
-
 
         <LightsPanel />
       </div>

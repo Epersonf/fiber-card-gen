@@ -7,7 +7,7 @@ export default function SceneContent() {
   const s = useStudio();
   const group = useMemo(() => HairBuilder.build(1234, s), [
     s.baseWidth, s.baseHeight, s.percentage, s.cardsPerSheet, s.marginPx,
-    s.hair_amount_offset, s.strand_points_count, s.gradient_color_enabled,
+    s.strand_points_count, s.gradient_color_enabled,
     s.hair_color, s.glossiness, s.sheen,
     s.root_thickness, s.tip_thickness,
     s.fixed_length_size, s.combined_length, s.minimum_length, s.maximum_length,
@@ -18,8 +18,8 @@ export default function SceneContent() {
     s.spawn_enabled, s.spawn_radius_ratio_x, s.spawn_radius_ratio_y, s.spawn_tilt_deg,
     s.curl_shape,
     s.hair_gradient_stops,
+    s.hair_amount_max, s.hair_amount_min_percent, s.hair_amount_curve,
   ]);
 
-  // ❌ nada de bbox/center aqui
   return <primitive object={group} />;
 }

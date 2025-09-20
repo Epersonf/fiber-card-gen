@@ -8,7 +8,7 @@ import type { StudioState } from "./models/studio.int";
 const ALLOWED_KEYS: (keyof StudioState)[] = [
   "lights",
   "baseWidth", "baseHeight", "percentage", "cardsPerSheet", "marginPx",
-  "hair_amount_offset", "strand_points_count",
+  "strand_points_count",
   "gradient_color_enabled", "hair_color", "glossiness", "sheen",
   "root_thickness", "tip_thickness",
   "fixed_length_size", "combined_length", "minimum_length", "maximum_length",
@@ -20,6 +20,8 @@ const ALLOWED_KEYS: (keyof StudioState)[] = [
   "enable_messiness_hair", "messiness_strength", "messiness_scale", "messiness_starting_point", "messiness_amount",
   "spawn_enabled", "spawn_radius_ratio_x", "spawn_radius_ratio_y", "spawn_tilt_deg",
   "curl_shape",
+  "hair_gradient_stops",
+  "hair_amount_max", "hair_amount_min_percent", "hair_amount_curve",
 ];
 
 export default function App() {
