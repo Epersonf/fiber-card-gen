@@ -12,6 +12,7 @@ export const useStudio = create<StudioState>((set, get) => ({
       enabled: true,
     },
   ],
+  background_color: '#202425',
 
   baseWidth: 6700,
   baseHeight: 3000,

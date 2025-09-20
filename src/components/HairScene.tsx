@@ -12,8 +12,6 @@ import CameraController from "./scene/camera/CameraController";
 import Controls2D from "./scene/controls/Controls2D";
 import Controls3D from "./scene/controls/Controls3D";
 import { useRenderTargets } from "./scene/render/useRenderTargets";
-import { useSceneRenderer } from "./scene/render/useSceneRenderer";
-import { CameraUtils } from "../utils/camera.utils";
 import { SceneRendererUtils } from "../utils/scene-renderer.utils";
 import LightGizmos from "./scene/LightGizmos";
 
@@ -31,7 +29,6 @@ export default function HairScene() {
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
 
   const { colorRT, normalRT } = useRenderTargets(exportW, exportH);
-  const { renderColor, renderNormal } = useSceneRenderer({ scene, camera, renderer: rendererRef.current });
 
   const cameraProps = viewMode === "2D"
     ? {
@@ -45,33 +42,35 @@ export default function HairScene() {
       orthographic: false as const,
       camera: { fov: 60, near: 0.1, far: 100000, position: [0, 0, 1000] as [number, number, number] },
     };
-
+  const bg = s.background_color;
   return (
     <SceneContainer>
       <RenderToolbar
         onRenderColor={() => {
-           if (scene && rendererRef.current) {
-             // Export sempre com visão 2D padrão e resolução da store
-             SceneRendererUtils.renderColor2DDefault(
-               scene,
-               rendererRef.current,
-               colorRT,
-               viewW,
-               viewH
-             );
-           }
-         }}
-         onRenderNormal={() => {
-           if (scene && rendererRef.current) {
-             SceneRendererUtils.renderNormal2DDefault(
-               scene,
-               rendererRef.current,
-               normalRT,
-               viewW,
-               viewH
-             );
-           }
-         }}
+          if (scene && rendererRef.current) {
+            // Export sempre com visão 2D padrão e resolução da store
+            SceneRendererUtils.renderColor2DDefault(
+              scene,
+              rendererRef.current,
+              colorRT,
+              viewW,
+              viewH,
+              bg
+            );
+          }
+        }}
+        onRenderNormal={() => {
+          if (scene && rendererRef.current) {
+            SceneRendererUtils.renderNormal2DDefault(
+              scene,
+              rendererRef.current,
+              normalRT,
+              viewW,
+              viewH,
+              bg
+            );
+          }
+        }}
         viewMode={viewMode}
         setViewMode={setViewMode}
       />
@@ -99,7 +98,7 @@ export default function HairScene() {
         <SceneSetup onSceneReady={(sc, cam) => { setScene(sc); setCamera(cam); }} />
         {viewMode === "2D" ? <Controls2D /> : <Controls3D />}
 
-        <color attach="background" args={["#1e1f22"]} />
+        <color attach="background" args={[bg]} />
         <Lights />
         <LightGizmos enabled={viewMode === "3D"} />
         <SceneContent />

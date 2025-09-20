@@ -6,7 +6,7 @@ export class ExportPngUtils {
     renderer: THREE.WebGLRenderer,
     rt: THREE.WebGLRenderTarget,
     filename = "output.png",
-    makeTransparent = true // Novo parâmetro para controlar transparência
+    bgColorHex: string,
   ) {
     const w = rt.width, h = rt.height;
     const pixels = new Uint8Array(w * h * 4);
@@ -21,6 +21,10 @@ export class ExportPngUtils {
     const ctx = canvas.getContext("2d", { alpha: true })!;
 
     // Criar ImageData
+    const R = parseInt(bgColorHex.slice(1, 3), 16);
+    const G = parseInt(bgColorHex.slice(3, 5), 16);
+    const B = parseInt(bgColorHex.slice(5, 7), 16);
+    const tol2 = 2 * 2; // tolerância^2 (2 níveis)
     const imageData = ctx.createImageData(w, h);
 
     // Copiar e inverter verticalmente os pixels
@@ -34,12 +38,9 @@ export class ExportPngUtils {
         const b = pixels[srcIndex + 2];
         const a = pixels[srcIndex + 3];
 
-        // Aplicar transparência apenas se makeTransparent for true
-        let newAlpha = a;
-        if (makeTransparent) {
-          const isBackground = (r === 0 && g === 0 && b === 0) || a === 0;
-          newAlpha = isBackground ? 0 : a;
-        }
+        const dr = r - R, dg = g - G, db = b - B;
+        const isBg = (dr * dr + dg * dg + db * db) <= tol2;
+        const newAlpha = isBg ? 0 : a;
 
         imageData.data[dstIndex] = r;
         imageData.data[dstIndex + 1] = g;

@@ -10,6 +10,7 @@ import { StudioState } from "../models/studio.int";
 export class HairBuilder {
   static build(seed = 1, s: StudioState): THREE.Group {
     const g = new THREE.Group();
+    g.userData.isHairRoot = true;
     const { cellW, cellH, cols, rows, W, H } = GroupLayout.computeCell(s);
     const baseStrands = Math.max(1, 18 + s.hair_amount_offset);
     const minStrands = Math.max(1, Math.floor(baseStrands * 0.05));
@@ -105,6 +106,7 @@ export class HairBuilder {
           const mesh = new THREE.Mesh(geom, HairMaterial.standard(s));
           mesh.castShadow = true;
           mesh.receiveShadow = true;
+          mesh.userData.isHair = true;
           strandGroup.add(mesh);
         }
 

@@ -11,6 +11,7 @@ export type StudioState = {
   percentage: number;          // 0.35..1.5 (35%..150%)
   cardsPerSheet: number;       // default 11
   marginPx: number;
+  background_color: string;
 
   // Hair Amount / Strand Points
   hair_amount_offset: number;

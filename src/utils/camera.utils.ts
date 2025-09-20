@@ -57,4 +57,30 @@ export class CameraUtils {
     );
     this.framePerspectiveToBox(cam, box, viewW, viewH, fov, 1.1);
   }
+
+  static frameOrthoToBox(
+    cam: THREE.OrthographicCamera,
+    box: THREE.Box3,
+    targetW: number,
+    targetH: number,
+    margin = 1.05
+  ) {
+    const size = new THREE.Vector3(); box.getSize(size);
+    const center = new THREE.Vector3(); box.getCenter(center);
+
+    let w = size.x * margin;
+    let h = size.y * margin;
+    const aspect = targetW / targetH;
+    const boxAspect = w / h;
+    if (boxAspect > aspect) h = w / aspect; else w = h * aspect;
+
+    cam.left = center.x - w / 2;
+    cam.right = center.x + w / 2;
+    cam.top = center.y + h / 2;
+    cam.bottom = center.y - h / 2;
+    cam.near = -10000; cam.far = 10000;
+    cam.position.set(center.x, center.y, 10);
+    cam.zoom = 1;
+    cam.updateProjectionMatrix();
+  }
 }
