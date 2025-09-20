@@ -17,7 +17,7 @@ export const useStudio = create<StudioState>((set, get) => ({
   baseWidth: 6700,
   baseHeight: 3000,
   percentage: 1.0,
-  cardsPerSheet: 11,
+  cardsPerSheet: 9,
   marginPx: 0,
 
   hair_amount_offset: 50,

@@ -147,6 +147,38 @@ export default function StudioPanel() {
           )}
         </CollapsiblePanel>
 
+        <CollapsiblePanel title="Spawn Plane" defaultOpen={false}>
+          <label>
+            Enabled
+            <input
+              type="checkbox"
+              checked={s.spawn_enabled}
+              onChange={e => set({ spawn_enabled: e.target.checked })}
+            />
+          </label>
+
+          <LabelRow>
+            <DSSlider
+              label="Radius Ratio"
+              min={0}
+              max={0.5}
+              step={0.005}
+              value={s.spawn_radius_ratio}
+              onChange={e => set({ spawn_radius_ratio: +e.target.value })}
+              displayValue={(s.spawn_radius_ratio * 100).toFixed(1) + '%'}
+            />
+            <DSSlider
+              label="Tilt (deg)"
+              min={-45}
+              max={45}
+              step={0.5}
+              value={s.spawn_tilt_deg}
+              onChange={e => set({ spawn_tilt_deg: +e.target.value })}
+              displayValue={s.spawn_tilt_deg.toFixed(1) + '°'}
+            />
+          </LabelRow>
+        </CollapsiblePanel>
+
         <LightsPanel />
       </div>
     </Panel>

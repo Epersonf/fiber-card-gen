@@ -1,23 +1,28 @@
 /* src/components/ui/LabelRow.css */
 .label-row {
   display: flex;
-  gap: 8px;
   flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
   font-family: var(--font-family);
   color: var(--color-text);
 }
 
 .label-row label {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   gap: 8px;
+  min-width: 0;
+  flex: 1 1 100%;
   margin: 6px 0;
   font-family: var(--font-family);
   color: var(--color-text);
 }
 
 .label-row input[type="range"] {
-  width: 160px;
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
   accent-color: var(--color-accent);
   background: transparent;
 }

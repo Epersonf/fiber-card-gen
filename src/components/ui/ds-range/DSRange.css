@@ -2,26 +2,35 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
   font-family: var(--font-family);
   color: var(--color-text);
   font-size: 1rem;
 }
+
 .ds-range-label-text {
+  flex: 0 0 auto;
   min-width: 90px;
 }
+
 .ds-range {
-  width: 140px;
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
   accent-color: var(--color-accent);
   background: transparent;
   border-radius: 6px;
   transition: accent-color 0.2s;
 }
+
 .ds-range:focus {
   outline: none;
   accent-color: var(--color-accent-hover);
 }
+
 .ds-range-value {
-  min-width: 32px;
+  flex: 0 0 auto;
+  min-width: 40px;
   text-align: right;
   color: var(--color-accent);
   font-weight: 500;
