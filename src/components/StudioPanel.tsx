@@ -21,13 +21,6 @@ export default function StudioPanel() {
         <label>Cards per Sheet <input type="number" min={1} value={s.cardsPerSheet} onChange={e => set({ cardsPerSheet: +e.target.value })} /></label>
         <label>Grid Layout <span>{gridCols} × {gridRows}</span></label>
         <label>Margin (px) <input type="number" min={0} value={s.marginPx} onChange={e => set({ marginPx: +e.target.value })} /></label>
-        <label>Normal Space
-          <select value={s.normalSpace} onChange={e => set({ normalSpace: e.target.value as any })}>
-            <option value="tangent">tangent</option>
-            <option value="object">object</option>
-            <option value="world">world</option>
-          </select>
-        </label>
       </DSGroup>
 
       <DSGroup title="Hair Amount">

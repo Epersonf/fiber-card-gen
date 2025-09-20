@@ -20,8 +20,6 @@ export const useStudio = create<StudioState>((set, get) => ({
   cardsPerSheet: 11,
   marginPx: 0,
 
-  normalSpace: "tangent",
-
   hair_amount_offset: 0,
   strand_points_count: 8,
 

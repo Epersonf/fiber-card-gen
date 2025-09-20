@@ -12,8 +12,6 @@ export type StudioState = {
   cardsPerSheet: number;       // default 11
   marginPx: number;
 
-  normalSpace: NormalSpace;
-
   // Hair Amount / Strand Points
   hair_amount_offset: number;
   strand_points_count: number;
