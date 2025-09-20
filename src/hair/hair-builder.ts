@@ -12,14 +12,24 @@ export class HairBuilder {
     const g = new THREE.Group();
 
     const { cellW, cellH, cols, rows, W, H } = GroupLayout.computeCell(s);
-    const strands = Math.max(1, 18 + s.hair_amount_offset);
+
+    // Calcular quantidade base de fios
+    const baseStrands = Math.max(1, 18 + s.hair_amount_offset);
+    const minStrands = Math.max(1, Math.floor(baseStrands * 0.05)); // Mínimo 30% dos fios
+    const maxStrands = baseStrands;
+
+    const totalCards = s.cardsPerSheet;
     const points = Math.max(2, s.strand_points_count);
-    const rand = RNGUtils.mulberry32(seed);
 
     let idx = 0;
     for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols && idx < s.cardsPerSheet; c++, idx++) {
+      for (let c = 0; c < cols && idx < totalCards; c++, idx++) {
+        // Calcular quantidade progressiva de fios
+        const progress = idx / (totalCards - 1);
+        const strands = Math.floor(THREE.MathUtils.lerp(minStrands, maxStrands, progress));
+
         const card = new THREE.Group();
+        const cardRand = RNGUtils.mulberry32(seed + idx); // Semente única por card
 
         const cardPlane = new THREE.Mesh(
           new THREE.PlaneGeometry(cellW, cellH),
@@ -40,7 +50,7 @@ export class HairBuilder {
           const padBot = basePad + maxRadiusPx;
           const usableH = Math.max(1, cellH - padTop - padBot);
 
-          const curve = StrandFactory.makeStrandCurve(points, cellW, usableH, padBot, rand, s);
+          const curve = StrandFactory.makeStrandCurve(points, cellW, usableH, padBot, cardRand, s);
           curve[0].y = padBot;
           curve[curve.length - 1].y = cellH - padTop;
 
