@@ -2,6 +2,9 @@
 .scene {
   position: relative;
   overflow: hidden;
+  background: var(--color-bg);
+  font-family: var(--font-family);
+  color: var(--color-text);
 }
 
 .scene,

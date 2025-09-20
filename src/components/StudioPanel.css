@@ -1,0 +1,51 @@
+
+.studio-panel {
+  font-family: var(--font-family);
+  background: var(--color-panel);
+  color: var(--color-text);
+  padding: 0;
+  min-width: 320px;
+  max-width: 400px;
+  height: 100%;
+  overflow-y: auto;
+  border-right: 1px solid var(--color-border);
+  box-shadow: 0 2px 16px #181a2033;
+}
+
+.studio-panel .collapsible-panel {
+  margin-bottom: 18px;
+}
+
+.studio-panel input,
+.studio-panel select {
+  background: var(--color-panel);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-family: var(--font-family);
+  font-size: 1rem;
+  padding: 4px 8px;
+  margin-left: 8px;
+}
+
+.studio-panel input[type="range"] {
+  width: 140px;
+  accent-color: var(--color-accent);
+  margin-left: 8px;
+}
+
+.studio-panel label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  gap: 8px;
+}
+
+.studio-panel .collapsible-panel__header {
+  font-size: 1.1rem;
+}
+
+.studio-panel .collapsible-panel__content {
+  padding-top: 8px;
+}

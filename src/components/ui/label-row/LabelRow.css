@@ -3,6 +3,8 @@
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  font-family: var(--font-family);
+  color: var(--color-text);
 }
 
 .label-row label {
@@ -10,8 +12,12 @@
   justify-content: space-between;
   gap: 8px;
   margin: 6px 0;
+  font-family: var(--font-family);
+  color: var(--color-text);
 }
 
 .label-row input[type="range"] {
   width: 160px;
+  accent-color: var(--color-accent);
+  background: transparent;
 }

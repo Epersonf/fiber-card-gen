@@ -1,4 +1,19 @@
 /* src/components/ui/DSGroup.css */
-.ds-group { border:1px solid #eee; border-radius:10px; padding:10px; margin-bottom:10px; }
-.ds-group__title { margin:0 0 8px 0; font-size:14px; }
-.ds-group__content { display:block; }
+.ds-group {
+	border: 1px solid var(--color-border);
+	border-radius: 10px;
+	padding: 14px 16px;
+	margin-bottom: 14px;
+	background: var(--color-panel);
+	font-family: var(--font-family);
+	color: var(--color-text);
+}
+.ds-group__title {
+	margin: 0 0 8px 0;
+	font-size: 1.1rem;
+	font-weight: 500;
+	color: var(--color-accent);
+}
+.ds-group__content {
+	display: block;
+}
