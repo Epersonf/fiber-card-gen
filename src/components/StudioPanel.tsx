@@ -159,13 +159,22 @@ export default function StudioPanel() {
 
           <LabelRow>
             <DSSlider
-              label="Radius Ratio"
+              label="Radius X"
               min={0}
               max={0.5}
               step={0.005}
-              value={s.spawn_radius_ratio}
-              onChange={e => set({ spawn_radius_ratio: +e.target.value })}
-              displayValue={(s.spawn_radius_ratio * 100).toFixed(1) + '%'}
+              value={s.spawn_radius_ratio_x}
+              onChange={e => set({ spawn_radius_ratio_x: +e.target.value })}
+              displayValue={(s.spawn_radius_ratio_x * 100).toFixed(1) + '%'}
+            />
+            <DSSlider
+              label="Radius Y"
+              min={0}
+              max={0.5}
+              step={0.005}
+              value={s.spawn_radius_ratio_y}
+              onChange={e => set({ spawn_radius_ratio_y: +e.target.value })}
+              displayValue={(s.spawn_radius_ratio_y * 100).toFixed(1) + '%'}
             />
             <DSSlider
               label="Tilt (deg)"
@@ -178,6 +187,7 @@ export default function StudioPanel() {
             />
           </LabelRow>
         </CollapsiblePanel>
+
 
         <LightsPanel />
       </div>

@@ -69,7 +69,8 @@ export type StudioState = {
   messiness_amount: number;
 
   spawn_enabled: boolean;
-  spawn_radius_ratio: number; // relativo à largura da célula
+  spawn_radius_ratio_x: number;
+  spawn_radius_ratio_y: number;
   spawn_tilt_deg: number;
 
   curl_shape: number;

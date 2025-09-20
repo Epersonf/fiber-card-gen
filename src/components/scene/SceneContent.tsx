@@ -15,7 +15,7 @@ export default function SceneContent() {
     s.enable_frizz_hair, s.frizz_scale, s.frizz_curve_enabled, s.frizz_curve_points,
     s.enable_hair_curl, s.curl_count, s.curl_amount, s.curl_scale,
     s.enable_messiness_hair, s.messiness_strength, s.messiness_scale, s.messiness_starting_point, s.messiness_amount,
-    s.spawn_enabled, s.spawn_radius_ratio, s.spawn_tilt_deg,
+    s.spawn_enabled, s.spawn_radius_ratio_x, s.spawn_radius_ratio_y, s.spawn_tilt_deg,
     s.curl_shape,
     s.hair_gradient_stops,
   ]);

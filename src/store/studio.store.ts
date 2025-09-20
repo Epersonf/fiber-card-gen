@@ -68,8 +68,9 @@ export const useStudio = create<StudioState>((set, get) => ({
   curl_shape: 0.0,
 
   spawn_enabled: true,
-  spawn_radius_ratio: 0.12,
-  spawn_tilt_deg: 6,
+  spawn_radius_ratio_x: 0.12,
+  spawn_radius_ratio_y: 0.04,
+  spawn_tilt_deg: -6,
 
   set: (s) => set(s),
   addLight: (light) => set((state) => ({
