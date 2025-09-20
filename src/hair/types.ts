@@ -39,4 +39,10 @@ export type StudioStateSubset = {
   messiness_scale: number;
   messiness_starting_point: number;
   messiness_amount: number;
+
+  curl_shape: number;
+
+  enable_delete_hair: boolean;
+  reduce_amount: number;
+  hairline_shape: number;
 };

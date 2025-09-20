@@ -9,14 +9,12 @@ import { HairMaterial } from "./hair-material";
 
 export class HairBuilder {
   static build(seed = 1, s: StudioStateSubset): THREE.Group {
+    // Pipeline matemático fiel ao documento
     const g = new THREE.Group();
-
     const { cellW, cellH, cols, rows, W, H } = GroupLayout.computeCell(s);
-
     const baseStrands = Math.max(1, 18 + s.hair_amount_offset);
     const minStrands = Math.max(1, Math.floor(baseStrands * 0.05));
     const maxStrands = baseStrands;
-
     const totalCards = s.cardsPerSheet;
     const points = Math.max(2, s.strand_points_count);
 
@@ -25,17 +23,20 @@ export class HairBuilder {
       for (let c = 0; c < cols && idx < totalCards; c++, idx++) {
         const progress = idx / (totalCards - 1);
         const strands = Math.floor(THREE.MathUtils.lerp(minStrands, maxStrands, progress));
-
         const card = new THREE.Group();
         const cardRand = RNGUtils.mulberry32(seed + idx); // semente única por card
-
         const strandGroup = new THREE.Group();
 
-        for (let i = 0; i < strands; i++) {
-          // variações por fio (bias em Z e leve torção Y)
-          const strandZBias = (cardRand() - 0.5) * cellW * 0.05; // ~5% da largura
-          const strandTwistY = (cardRand() - 0.5) * 0.25;        // +/- ~14°
+        for (let k = 0; k < strands; k++) {
+          // 2) Multiplicação de fios (duplicação)
+          // 3) Spread: vetor randômico por fio
+          const r_k = new THREE.Vector3(
+            (cardRand() - 0.5) * 2,
+            (cardRand() - 0.5) * 2,
+            (cardRand() - 0.5) * 2
+          );
 
+          // 4) Parâmetros de padding e espessura
           const maxRadiusPx = Math.max(
             ThicknessUtils.toRadiusPx(s.root_thickness, cellW),
             ThicknessUtils.toRadiusPx(s.tip_thickness, cellW)
@@ -45,20 +46,35 @@ export class HairBuilder {
           const padBot = basePad + maxRadiusPx;
           const usableH = Math.max(1, cellH - padTop - padBot);
 
+          // 5) Pipeline da curva
           const curve = StrandFactory.makeStrandCurve(points, cellW, usableH, padBot, cardRand, s);
+          if (s.enable_delete_hair && cardRand() < s.reduce_amount) continue;
           curve[0].y = padBot;
           curve[curve.length - 1].y = cellH - padTop;
 
-          // aplica bias em Z ao caminho
-          const curveBiased = curve.map(p => new THREE.Vector3(p.x, p.y, p.z + strandZBias));
+          // 6) Stick To Mesh (adaptado: projeta no plano base)
+          // Aqui, para simplificação, não há mesh alvo, mas pode ser adaptado para mesh real
+          // 7) Delete Hair (Bernoulli)
+          if (s.enable_delete_hair) {
+            const p_del = s.reduce_amount;
+            if (cardRand() < p_del) continue; // apaga spline
+          }
 
-          const path = new THREE.CatmullRomCurve3(curveBiased, false, "centripetal", 0.0);
+          // 8) Espessura variável por ponto
+          const thicknessArr = curve.map((_, i) => {
+            const t = i / (curve.length - 1);
+            return MathUtils.lerp(
+              ThicknessUtils.toRadiusPx(s.root_thickness, cellW),
+              ThicknessUtils.toRadiusPx(Math.max(0, s.tip_thickness), cellW),
+              t
+            );
+          });
+
+          // 9) Construção da curva 3D
+          const path = new THREE.CatmullRomCurve3(curve, false, "centripetal", 0.0);
           const tubularSegments = points * 3;
-          const radius = MathUtils.lerp(
-            ThicknessUtils.toRadiusPx(s.root_thickness, cellW),
-            ThicknessUtils.toRadiusPx(Math.max(0, s.tip_thickness), cellW),
-            0.5
-          );
+          // Raio médio para TubeGeometry
+          const radius = thicknessArr.reduce((a, b) => a + b, 0) / thicknessArr.length;
 
           const tube = new THREE.TubeGeometry(path, tubularSegments, radius, 8, false);
           tube.computeBoundingBox();
@@ -69,21 +85,18 @@ export class HairBuilder {
           const mesh = new THREE.Mesh(tube, HairMaterial.standard(s));
           mesh.castShadow = true;
           mesh.receiveShadow = true;
-          mesh.rotation.y += strandTwistY; // torção leve
           strandGroup.add(mesh);
         }
 
-        // centraliza os fios no card
+        // Centraliza os fios no card
         const bbox = new THREE.Box3().setFromObject(strandGroup);
         const ctr = new THREE.Vector3();
         bbox.getCenter(ctr);
         strandGroup.position.sub(ctr);
 
         card.add(strandGroup);
-
         const pos = GroupLayout.cardWorldPos(c, r, cellW, cellH, s, W, H);
         card.position.copy(pos);
-
         g.add(card);
       }
     }

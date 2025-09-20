@@ -71,6 +71,8 @@ export type StudioState = {
   light_source_location: number;
   light_intensity: number;
 
+  curl_shape: number;
+
   set: (s: Partial<StudioState>) => void;
   addLight: (light: Omit<Light, 'id'>) => void;
   updateLight: (id: string, updates: Partial<Light>) => void;

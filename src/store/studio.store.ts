@@ -66,6 +66,7 @@ export const useStudio = create<StudioState>((set, get) => ({
 
   light_source_location: -7.34,
   light_intensity: 3500,
+  curl_shape: 0.0,
 
   set: (s) => set(s),
   addLight: (light) => set((state) => ({

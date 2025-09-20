@@ -98,6 +98,7 @@ export default function StudioPanel() {
       </DSGroup>
 
       <DSGroup title="Hair Frizz">
+        <label>Curve Enabled <input type="checkbox" checked={s.frizz_curve_enabled} onChange={e => set({ frizz_curve_enabled: e.target.checked })} /></label>
         <label><input type="checkbox" checked={s.enable_frizz_hair} onChange={e => set({ enable_frizz_hair: e.target.checked })} /> Enable Hair Frizz</label>
         {s.enable_frizz_hair && (
           <>
@@ -115,6 +116,7 @@ export default function StudioPanel() {
       </DSGroup>
 
       <DSGroup title="Hair Curl">
+        <label>Shape <input type="range" min={0} max={20} step={0.01} value={s.curl_shape} onChange={e => set({ curl_shape: +e.target.value })} /></label>
         <label><input type="checkbox" checked={s.enable_hair_curl} onChange={e => set({ enable_hair_curl: e.target.checked })} /> Enable Hair Curl</label>
         {s.enable_hair_curl && (
           <>
