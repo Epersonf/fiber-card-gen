@@ -10,7 +10,6 @@ export const useStudio = create<StudioState>((set, get) => ({
       intensity: 3500,
       color: '#ffffff',
       enabled: true,
-      target: [0, 0, 0],
     },
   ],
 
