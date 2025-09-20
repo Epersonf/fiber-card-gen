@@ -12,8 +12,15 @@ export default function GradientStopsEditor() {
     [s.hair_gradient_stops]
   );
 
+  const previewCss = useMemo(() => {
+    const stops = sorted.map(st => `${st.color} ${Math.round(st.pos * 100)}%`).join(", ");
+    return { background: `linear-gradient(90deg, ${stops})` };
+  }, [sorted]);
+
   return (
     <div className="grad-editor">
+      <div className="grad-preview" style={previewCss} />
+
       {sorted.map((stp, i) => (
         <div className="grad-row" key={i}>
           <input
@@ -37,13 +44,14 @@ export default function GradientStopsEditor() {
               set({ hair_gradient_stops: next });
             }}
           />
-          <span>{Math.round(stp.pos * 100)}%</span>
+          <span className="grad-perc">{Math.round(stp.pos * 100)}%</span>
           <DSButton variant="ghost" onClick={() => {
             const next = s.hair_gradient_stops.filter((_, idx) => idx !== i);
             set({ hair_gradient_stops: next.length ? next : [{ pos: 0, color: '#000000' }, { pos: 1, color: '#ffffff' }] });
           }}>Remove</DSButton>
         </div>
       ))}
+
       <DSButton onClick={() => {
         const next = [...s.hair_gradient_stops, { pos: 0.5, color: '#888888' }];
         set({ hair_gradient_stops: next });

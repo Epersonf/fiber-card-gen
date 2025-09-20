@@ -1,16 +1,56 @@
 .grad-editor {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+}
+
+/* barra de preview do gradiente (opcional, mas ajuda muito) */
+.grad-preview {
+  height: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
 }
 
 .grad-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 44px 1fr auto auto;
+  /* swatch | slider | % | btn */
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+}
+
+.grad-row input[type="color"] {
+  -webkit-appearance: none;
+  border: 1px solid var(--color-border);
+  width: 44px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border-radius: 6px;
+}
+
+.grad-row input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 4px;
+}
+
+.grad-row input[type="color"]::-moz-color-swatch {
+  border: none;
+  border-radius: 4px;
 }
 
 .grad-row input[type="range"] {
-  width: 160px;
+  width: 100%;
   accent-color: var(--color-accent);
+}
+
+.grad-perc {
+  width: 48px;
+  text-align: right;
+  color: var(--color-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.grad-editor .ds-btn {
+  white-space: nowrap;
 }
