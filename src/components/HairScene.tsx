@@ -15,6 +15,7 @@ import { useRenderTargets } from "./scene/render/useRenderTargets";
 import { useSceneRenderer } from "./scene/render/useSceneRenderer";
 import { CameraUtils } from "../utils/camera.utils";
 import { SceneRendererUtils } from "../utils/scene-renderer.utils";
+import LightGizmos from "./scene/LightGizmos";
 
 export default function HairScene() {
   const s = useStudio();
@@ -100,6 +101,7 @@ export default function HairScene() {
 
         <color attach="background" args={["#1e1f22"]} />
         <Lights />
+        <LightGizmos enabled={viewMode === "3D"} />
         <SceneContent />
       </Canvas>
     </SceneContainer>
