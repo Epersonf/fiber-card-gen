@@ -1,6 +1,16 @@
 import * as THREE from "three";
 
 export class CameraUtils {
+  static createDefaultOrtho(viewW: number, viewH: number) {
+    const cam = new THREE.OrthographicCamera(
+      -viewW / 2, viewW / 2, viewH / 2, -viewH / 2, -10000, 10000
+    );
+    cam.position.set(0, 0, 10);
+    cam.zoom = 1;
+    cam.updateProjectionMatrix();
+    return cam;
+  }
+
   static resetOrtho(cam: THREE.OrthographicCamera, viewW: number, viewH: number) {
     cam.zoom = 1;
     cam.position.set(0, 0, 10);

@@ -13,6 +13,8 @@ import Controls2D from "./scene/controls/Controls2D";
 import Controls3D from "./scene/controls/Controls3D";
 import { useRenderTargets } from "./scene/render/useRenderTargets";
 import { useSceneRenderer } from "./scene/render/useSceneRenderer";
+import { CameraUtils } from "../utils/camera.utils";
+import { SceneRendererUtils } from "../utils/scene-renderer.utils";
 
 export default function HairScene() {
   const s = useStudio();
@@ -32,22 +34,43 @@ export default function HairScene() {
 
   const cameraProps = viewMode === "2D"
     ? {
-        orthographic: true as const,
-        camera: {
-          left: -viewW / 2, right: viewW / 2, top: viewH / 2, bottom: -viewH / 2,
-          near: -10000, far: 10000, position: [0, 0, 10] as [number, number, number],
-        },
-      }
+      orthographic: true as const,
+      camera: {
+        left: -viewW / 2, right: viewW / 2, top: viewH / 2, bottom: -viewH / 2,
+        near: -10000, far: 10000, position: [0, 0, 10] as [number, number, number],
+      },
+    }
     : {
-        orthographic: false as const,
-        camera: { fov: 60, near: 0.1, far: 100000, position: [0, 0, 1000] as [number, number, number] },
-      };
+      orthographic: false as const,
+      camera: { fov: 60, near: 0.1, far: 100000, position: [0, 0, 1000] as [number, number, number] },
+    };
 
   return (
     <SceneContainer>
       <RenderToolbar
-        onRenderColor={() => renderColor(colorRT)}
-        onRenderNormal={() => renderNormal(normalRT)}
+        onRenderColor={() => {
+           if (scene && rendererRef.current) {
+             // Export sempre com visão 2D padrão e resolução da store
+             SceneRendererUtils.renderColor2DDefault(
+               scene,
+               rendererRef.current,
+               colorRT,
+               viewW,
+               viewH
+             );
+           }
+         }}
+         onRenderNormal={() => {
+           if (scene && rendererRef.current) {
+             SceneRendererUtils.renderNormal2DDefault(
+               scene,
+               rendererRef.current,
+               normalRT,
+               viewW,
+               viewH
+             );
+           }
+         }}
         viewMode={viewMode}
         setViewMode={setViewMode}
       />
