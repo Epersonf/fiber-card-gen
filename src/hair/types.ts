@@ -45,4 +45,8 @@ export type StudioStateSubset = {
   enable_delete_hair: boolean;
   reduce_amount: number;
   hairline_shape: number;
+  
+  spawn_enabled?: boolean;         // default true
+  spawn_radius_ratio?: number;     // 0..1 (fração da cellW). default 0.12
+  spawn_tilt_deg?: number;
 };

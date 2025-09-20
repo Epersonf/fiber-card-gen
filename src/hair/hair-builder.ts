@@ -49,16 +49,10 @@ export class HairBuilder {
           // 5) Pipeline da curva
           const curve = StrandFactory.makeStrandCurve(points, cellW, usableH, padBot, cardRand, s);
           if (s.enable_delete_hair && cardRand() < s.reduce_amount) continue;
-          curve[0].y = padBot;
-          curve[curve.length - 1].y = cellH - padTop;
 
           // 6) Stick To Mesh (adaptado: projeta no plano base)
           // Aqui, para simplificação, não há mesh alvo, mas pode ser adaptado para mesh real
           // 7) Delete Hair (Bernoulli)
-          if (s.enable_delete_hair) {
-            const p_del = s.reduce_amount;
-            if (cardRand() < p_del) continue; // apaga spline
-          }
 
           // 8) Espessura variável por ponto
           const thicknessArr = curve.map((_, i) => {

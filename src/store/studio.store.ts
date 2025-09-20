@@ -68,6 +68,10 @@ export const useStudio = create<StudioState>((set, get) => ({
   light_intensity: 3500,
   curl_shape: 0.0,
 
+  spawn_enabled: true,
+  spawn_radius_ratio: 0.12,
+  spawn_tilt_deg: 6,
+
   set: (s) => set(s),
   addLight: (light) => set((state) => ({
     lights: [...state.lights, { ...light, id: Math.random().toString(36).substr(2, 9) }]

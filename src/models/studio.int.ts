@@ -71,6 +71,10 @@ export type StudioState = {
   light_source_location: number;
   light_intensity: number;
 
+  spawn_enabled: boolean;
+  spawn_radius_ratio: number; // relativo à largura da célula
+  spawn_tilt_deg: number;
+
   curl_shape: number;
 
   set: (s: Partial<StudioState>) => void;
