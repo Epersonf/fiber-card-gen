@@ -38,7 +38,6 @@ export default function Lights() {
             shadow-bias={-0.0001}
             shadow-normalBias={0.8}
             // direção: olha para target
-            target-position={light.target ?? [0, 0, 0]}
           />
         ) : (
           <pointLight

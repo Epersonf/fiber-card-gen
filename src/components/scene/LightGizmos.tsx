@@ -92,9 +92,7 @@ export default function LightGizmos({ enabled }: Props) {
 
         // directional: haste + cone, orientado para target (ou 0,0,0)
         const origin = new THREE.Vector3().fromArray(light.position);
-        const tArr = light.target ?? [0, 0, 0];
-        const target = new THREE.Vector3().fromArray(tArr);
-        const dir = target.clone().sub(origin);
+        const dir = new THREE.Vector3(0, 0, 0).sub(origin);
         if (dir.lengthSq() === 0) dir.set(0, -1, 0);
         dir.normalize();
         const quat = new THREE.Quaternion().setFromUnitVectors(up, dir);

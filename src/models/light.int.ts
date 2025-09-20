@@ -7,5 +7,4 @@ export interface Light {
   enabled: boolean;
   distance?: number;                  // point: raio de influência (0 = infinito)
   decay?: number;                     // point: atenuação (2 padrão físico)
-  target?: [number, number, number];  // directional: para onde aponta (default [0,0,0])
 }

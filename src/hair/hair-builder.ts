@@ -46,6 +46,7 @@ export class HairBuilder {
           const curve = StrandFactory.makeStrandCurve(points, cellW, usableH, padBot, cardRand, s);
           if (s.enable_delete_hair && cardRand() < s.reduce_amount) continue;
 
+          // raio por ponto: root (t=0, topo) -> tip (t=1, parte inferior)
           const thicknessArr = curve.map((_, i) => {
             const t = i / (curve.length - 1);
             return MathUtils.lerp(
@@ -57,18 +58,57 @@ export class HairBuilder {
 
           const path = new THREE.CatmullRomCurve3(curve, false, "centripetal", 0.0);
           const tubularSegments = points * 3;
-          const radius = thicknessArr.reduce((a, b) => a + b, 0) / thicknessArr.length;
+          const radialSegments = 8;
 
-          const tube = new THREE.TubeGeometry(path, tubularSegments, radius, 8, false);
-          // ❌ não computeBoundingBox / não translate para o centro
+          // cria com raio 1; depois reescala cada anel p/ o raio desejado
+          const geom = new THREE.TubeGeometry(path, tubularSegments, 1, radialSegments, false);
+          const P = geom.attributes.position as THREE.BufferAttribute;
 
-          const mesh = new THREE.Mesh(tube, HairMaterial.standard(s));
+          const rings = tubularSegments + 1;      // número de anéis ao longo do tubo
+          const vertsPerRing = radialSegments + 1; // seam fechado duplica 1 vértice
+
+          for (let iRing = 0; iRing < rings; iRing++) {
+            const t = iRing / (rings - 1);
+            const idxArr = Math.min(
+              Math.round(t * (thicknessArr.length - 1)),
+              thicknessArr.length - 1
+            );
+            const ri = thicknessArr[idxArr];
+
+            // centro do anel no caminho
+            const center = path.getPointAt(iRing / tubularSegments);
+
+            for (let j = 0; j < vertsPerRing; j++) {
+              const idx3 = (iRing * vertsPerRing + j) * 3;
+
+              const x = P.array[idx3 + 0];
+              const y = P.array[idx3 + 1];
+              const z = P.array[idx3 + 2];
+
+              // vetor do centro ao vértice
+              const vx = x - center.x;
+              const vy = y - center.y;
+              const vz = z - center.z;
+              const len = Math.hypot(vx, vy, vz) || 1;
+
+              // normaliza e aplica novo raio
+              P.array[idx3 + 0] = center.x + (vx / len) * ri;
+              P.array[idx3 + 1] = center.y + (vy / len) * ri;
+              P.array[idx3 + 2] = center.z + (vz / len) * ri;
+            }
+          }
+
+          P.needsUpdate = true;
+          geom.computeVertexNormals();
+          geom.computeBoundingSphere();
+
+          const mesh = new THREE.Mesh(geom, HairMaterial.standard(s));
           mesh.castShadow = true;
           mesh.receiveShadow = true;
           strandGroup.add(mesh);
         }
 
-        // ❌ não recentralize o strandGroup pelo bbox
+        // posiciona card na folha (sem recentralizar por bbox)
         const pos = GroupLayout.cardWorldPos(c, r, cellW, cellH, s, W, H);
         card.position.copy(pos);
         card.add(strandGroup);
