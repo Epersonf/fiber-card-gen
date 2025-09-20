@@ -1,20 +1,16 @@
 import * as THREE from "three";
-import { RNGUtils } from "../utils/rng.utils";
-import { ThicknessUtils } from "../utils/thickness.utils";
-import { MathUtils } from "../utils/math.utils";
 import { GroupLayout } from "./group-layout";
-import { StrandFactory } from "./strand-factory";
-import { HairMaterial } from "./hair-material";
 import { StudioState } from "../models/studio.int";
 import chroma from "chroma-js";
+import { CardFactory } from "./ops/card-factory";
 
 export class HairBuilder {
   static build(seed = 1, s: StudioState): THREE.Group {
     const g = new THREE.Group();
     g.userData.isHairRoot = true;
+
     const { cellW, cellH, cols, rows, W, H } = GroupLayout.computeCell(s);
 
-    const totalCards = s.cardsPerSheet;
     const points = Math.max(2, s.strand_points_count);
 
     const gradientSampler =
@@ -23,119 +19,41 @@ export class HairBuilder {
           .scale(s.hair_gradient_stops.sort((a, b) => a.pos - b.pos).map(st => st.color))
           .domain([0, 1])
           .mode("lab")
-        : null;
+        : undefined;
 
     const maxStrands = Math.max(1, Math.floor(s.hair_amount_max));
     const minStrands = Math.max(1, Math.floor(maxStrands * Math.min(Math.max(s.hair_amount_min_percent, 0), 1)));
 
+    const totalCards = s.cardsPerSheet;
     let idx = 0;
+
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols && idx < totalCards; c++, idx++) {
         const t = totalCards > 1 ? idx / (totalCards - 1) : 1;
-        
-        let shaped = t;
-        switch (s.hair_amount_curve) {
-          case 'quad': shaped = t * t; break;
-          case 'sqrt': shaped = Math.sqrt(t); break;
-          default: shaped = t; break;
-        }
+        const shaped =
+          s.hair_amount_curve === "quad" ? t * t :
+            s.hair_amount_curve === "sqrt" ? Math.sqrt(t) : t;
 
-        const strands = Math.max(
-          1,
-          Math.floor(THREE.MathUtils.lerp(minStrands, maxStrands, shaped))
+        const strands = Math.max(1, Math.floor(THREE.MathUtils.lerp(minStrands, maxStrands, shaped)));
+
+        const strandGroup = CardFactory.buildCard(
+          seed + idx,
+          points,
+          strands,
+          cellW,
+          cellH,
+          s,
+          gradientSampler
         );
 
         const card = new THREE.Group();
-        const cardRand = RNGUtils.mulberry32(seed + idx);
-        const strandGroup = new THREE.Group();
-
-        for (let k = 0; k < strands; k++) {
-          const maxRadiusPx = Math.max(
-            ThicknessUtils.toRadiusPx(s.root_thickness, cellW),
-            ThicknessUtils.toRadiusPx(s.tip_thickness, cellW)
-          );
-          const basePad = cellH * 0.09;
-          const padTop = basePad + maxRadiusPx;
-          const padBot = basePad + maxRadiusPx;
-          const usableH = Math.max(1, cellH - padTop - padBot);
-
-          const curve = StrandFactory.makeStrandCurve(points, cellW, usableH, padBot, cardRand, s);
-          if (s.enable_delete_hair && cardRand() < s.reduce_amount) continue;
-
-          const thicknessArr = curve.map((_, i) => {
-            const t = i / (curve.length - 1);
-            return MathUtils.lerp(
-              ThicknessUtils.toRadiusPx(s.root_thickness, cellW),
-              ThicknessUtils.toRadiusPx(Math.max(0, s.tip_thickness), cellW),
-              t
-            );
-          });
-
-          const path = new THREE.CatmullRomCurve3(curve, false, "centripetal", 0.0);
-          const tubularSegments = points * 3;
-          const radialSegments = 8;
-
-          const geom = new THREE.TubeGeometry(path, tubularSegments, 1, radialSegments, false);
-          const P = geom.attributes.position as THREE.BufferAttribute;
-
-          const rings = tubularSegments + 1;
-          const vertsPerRing = radialSegments + 1;
-
-          for (let iRing = 0; iRing < rings; iRing++) {
-            const t = iRing / (rings - 1);
-            const idxArr = Math.min(Math.round(t * (thicknessArr.length - 1)), thicknessArr.length - 1);
-            const ri = thicknessArr[idxArr];
-            const center = path.getPointAt(iRing / tubularSegments);
-            for (let j = 0; j < vertsPerRing; j++) {
-              const idx3 = (iRing * vertsPerRing + j) * 3;
-              const x = (P.array as any)[idx3 + 0];
-              const y = (P.array as any)[idx3 + 1];
-              const z = (P.array as any)[idx3 + 2];
-              const vx = x - center.x;
-              const vy = y - center.y;
-              const vz = z - center.z;
-              const len = Math.hypot(vx, vy, vz) || 1;
-              (P.array as any)[idx3 + 0] = center.x + (vx / len) * ri;
-              (P.array as any)[idx3 + 1] = center.y + (vy / len) * ri;
-              (P.array as any)[idx3 + 2] = center.z + (vz / len) * ri;
-            }
-          }
-
-          P.needsUpdate = true;
-          geom.computeVertexNormals();
-          geom.computeBoundingSphere();
-
-          if (gradientSampler) {
-            const colors = new Float32Array((rings * vertsPerRing) * 3);
-            for (let iRing = 0; iRing < rings; iRing++) {
-              const t = iRing / (rings - 1);
-              const [rCol, gCol, bCol] = gradientSampler(t).rgb();
-              const R = rCol / 255, G = gCol / 255, B = bCol / 255;
-              for (let j = 0; j < vertsPerRing; j++) {
-                const idx3 = (iRing * vertsPerRing + j) * 3;
-                colors[idx3 + 0] = R;
-                colors[idx3 + 1] = G;
-                colors[idx3 + 2] = B;
-              }
-            }
-            geom.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-          } else if (geom.getAttribute("color")) {
-            geom.deleteAttribute("color");
-          }
-
-          const mesh = new THREE.Mesh(geom, HairMaterial.standard(s));
-          mesh.castShadow = true;
-          mesh.receiveShadow = true;
-          mesh.userData.isHair = true;
-          strandGroup.add(mesh);
-        }
-
         const pos = GroupLayout.cardWorldPos(c, r, cellW, cellH, s, W, H);
         card.position.copy(pos);
         card.add(strandGroup);
         g.add(card);
       }
     }
+
     return g;
   }
 }
