@@ -1,13 +1,14 @@
-import DSGroup from "../ui/ds-group/DSGroup";
-import DSButton from "../ui/ds-button/DSButton";
-import LabelRow from "../ui/label-row/LabelRow";
 import { useStudio } from "../../store/studio.store";
+import { CollapsiblePanel } from "../ui/collapsible-panel/CollapsiblePanel";
+import DSButton from "../ui/ds-button/DSButton";
+import DSGroup from "../ui/ds-group/DSGroup";
+import LabelRow from "../ui/label-row/LabelRow";
 
 export default function LightsPanel() {
   const { lights, addLight, updateLight, removeLight } = useStudio();
 
   return (
-    <DSGroup title="Lighting">
+    <CollapsiblePanel title="Lighting" defaultOpen={false}>
       {lights.map((light) => (
         <DSGroup key={light.id} title={`Light ${light.id}`}>
           <label>
@@ -34,12 +35,10 @@ export default function LightsPanel() {
             <label>Z <input type="number" value={light.position[2]} onChange={(e) => updateLight(light.id, { position: [light.position[0], light.position[1], parseFloat(e.target.value)] })} /></label>
           </LabelRow>
           {light.type === 'point' && (
-            <>
-              <LabelRow>
-                <label>Distance <input type="number" min={0} step={1} value={light.distance ?? 0} onChange={(e) => updateLight(light.id, { distance: parseFloat(e.target.value) })} /></label>
-                <label>Decay <input type="number" min={0} step={0.1} value={light.decay ?? 2} onChange={(e) => updateLight(light.id, { decay: parseFloat(e.target.value) })} /></label>
-              </LabelRow>
-            </>
+            <LabelRow>
+              <label>Distance <input type="number" min={0} step={1} value={light.distance ?? 0} onChange={(e) => updateLight(light.id, { distance: parseFloat(e.target.value) })} /></label>
+              <label>Decay <input type="number" min={0} step={0.1} value={light.decay ?? 2} onChange={(e) => updateLight(light.id, { decay: parseFloat(e.target.value) })} /></label>
+            </LabelRow>
           )}
           <label>
             Intensity
@@ -74,6 +73,7 @@ export default function LightsPanel() {
       })}>
         Add Light
       </DSButton>
-    </DSGroup>
+    </CollapsiblePanel>
   );
 }
+

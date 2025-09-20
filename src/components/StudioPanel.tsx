@@ -98,7 +98,6 @@ export default function StudioPanel() {
           {s.enable_frizz_hair && (
             <>
               <label>Scale <input type="range" min={0} max={5} step={0.01} value={s.frizz_scale} onChange={e => set({ frizz_scale: +e.target.value })} /></label>
-              <label><input type="checkbox" checked={s.frizz_curve_enabled} onChange={e => set({ frizz_curve_enabled: e.target.checked })} /> Frizz Curve</label>
             </>
           )}
         </CollapsiblePanel>
