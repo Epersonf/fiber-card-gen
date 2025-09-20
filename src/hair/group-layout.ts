@@ -1,20 +1,20 @@
 import * as THREE from "three";
-import { type StudioStateSubset } from "./types";
+import { StudioState } from "../models/studio.int";
 
 export class GroupLayout {
-  static computeSheetSize(s: StudioStateSubset) {
+  static computeSheetSize(s: StudioState) {
     const W = s.baseWidth * s.percentage;
     const H = s.baseHeight * s.percentage;
     return { W, H };
   }
 
-  static computeGrid(s: StudioStateSubset) {
+  static computeGrid(s: StudioState) {
     const cols = Math.ceil(Math.sqrt(s.cardsPerSheet));
     const rows = Math.ceil(s.cardsPerSheet / cols);
     return { cols, rows };
   }
 
-  static computeCell(s: StudioStateSubset) {
+  static computeCell(s: StudioState) {
     const { W, H } = this.computeSheetSize(s);
     const { cols, rows } = this.computeGrid(s);
     const cellW = (W - (cols + 1) * s.marginPx) / cols;
@@ -27,7 +27,7 @@ export class GroupLayout {
     row: number,
     cellW: number,
     cellH: number,
-    s: StudioStateSubset,
+    s: StudioState,
     W: number,
     H: number
   ) {

@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import { MathUtils } from "../utils/math.utils";
 import { FrizzUtils } from "../utils/frizz.utils";
-import { type StudioStateSubset } from "./types";
 import { NoiseUtils } from "../utils/noise.utils";
+import { StudioState } from "../models/studio.int";
 
 export class StrandFactory {
   static makeStrandCurve(
@@ -11,7 +11,7 @@ export class StrandFactory {
     usableH: number,
     padBot: number,
     rand: () => number,
-    s: StudioStateSubset
+    s: StudioState
   ): THREE.Vector3[] {
     // 1) Discretização
     const total = Math.max(2, points);

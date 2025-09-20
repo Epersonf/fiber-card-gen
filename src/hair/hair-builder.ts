@@ -2,13 +2,13 @@ import * as THREE from "three";
 import { RNGUtils } from "../utils/rng.utils";
 import { ThicknessUtils } from "../utils/thickness.utils";
 import { MathUtils } from "../utils/math.utils";
-import { type StudioStateSubset } from "./types";
 import { GroupLayout } from "./group-layout";
 import { StrandFactory } from "./strand-factory";
 import { HairMaterial } from "./hair-material";
+import { StudioState } from "../models/studio.int";
 
 export class HairBuilder {
-  static build(seed = 1, s: StudioStateSubset): THREE.Group {
+  static build(seed = 1, s: StudioState): THREE.Group {
     const g = new THREE.Group();
     const { cellW, cellH, cols, rows, W, H } = GroupLayout.computeCell(s);
     const baseStrands = Math.max(1, 18 + s.hair_amount_offset);
