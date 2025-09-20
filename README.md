@@ -1,46 +1,75 @@
-# Getting Started with Create React App
+# Fiber Card Gen
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Fiber Card Gen** is a web application for generating and visualizing hair cards using React, Three.js, and React Three Fiber. It provides real‑time 2D/3D visualization, customizable strand parameters, and export options for rendering color and normal maps.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Real‑time 2D/3D preview** of hair card sheets
+- **Configurable parameters** for strands:
+  - Strand points, length, thickness
+  - Spread, clumping, frizz, curls, messiness
+  - Gradient hair colors and material properties
+- **Spawn plane visualization** with radius and tilt adjustments
+- **Lighting setup** with directional and point lights, editable in the UI
+- **Render toolbar** for exporting:
+  - Color map (PNG)
+  - Normal map (PNG)
+- **Copy/paste state** as JSON for sharing presets
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Tech Stack
 
-### `npm test`
+- **React 19**
+- **TypeScript**
+- **Three.js** (3D engine)
+- **React Three Fiber** (renderer binding)
+- **Zustand** (state management)
+- **Chroma.js** (color scales)
+- **Open Simplex Noise** (procedural frizz/messiness)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## Project Structure
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- `src/components` → UI and scene components (`.tsx` files, lower camelCase)
+- `src/hair` → hair generation logic and operations (`.ts` files, kebab-case)
+- `src/store` → Zustand state store
+- `src/utils` → math, noise, rendering, and helper utilities
+- `src/models` → TypeScript type definitions
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Scripts
 
-### `npm run eject`
+- `npm start` → run development server
+- `npm build` → build for production
+- `npm test` → run tests
+- `npm run deploy` → build and deploy to GitHub Pages
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+The project is published at:
+[https://epersonf.github.io/fiber-card-gen](https://epersonf.github.io/fiber-card-gen)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Installation
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```bash
+# clone repository
+git clone https://github.com/epersonf/fiber-card-gen
+cd fiber-card-gen
 
-## Learn More
+# install dependencies
+npm install
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+# run in dev mode
+npm start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
+
+## License
+
+Licensed under the [MIT License](LICENSE).
