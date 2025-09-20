@@ -16,6 +16,8 @@ export default function SceneContent() {
     s.enable_hair_curl, s.curl_count, s.curl_amount, s.curl_scale,
     s.enable_messiness_hair, s.messiness_strength, s.messiness_scale, s.messiness_starting_point, s.messiness_amount,
     s.spawn_enabled, s.spawn_radius_ratio, s.spawn_tilt_deg,
+    s.curl_shape,
+    s.hair_gradient_stops,
   ]);
 
   // ❌ nada de bbox/center aqui
