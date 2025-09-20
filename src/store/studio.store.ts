@@ -4,12 +4,13 @@ import { StudioState } from "../models/studio.int";
 export const useStudio = create<StudioState>((set, get) => ({
   lights: [
     {
-      id: '1',
+      id: 'DEFAULT',
       type: 'directional',
       position: [0, 0, 5],
       intensity: 3500,
       color: '#ffffff',
-      enabled: true
+      enabled: true,
+      target: [0, 0, 0],
     },
   ],
 

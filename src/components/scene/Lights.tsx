@@ -10,38 +10,42 @@ export default function Lights() {
   return (
     <>
       {lights.filter(l => l.enabled).map((light) => {
-        const props = {
-          position: light.position,
-          intensity: light.intensity * 0.0005,
-          color: light.color,
-        };
+        const isDir = light.type === "directional";
+        const intensity =
+          isDir ? light.intensity * 0.0005 : light.intensity * 0.002; // point um pouco mais forte
 
-        return light.type === "directional" ? (
+        const common = {
+          position: light.position,
+          intensity,
+          color: light.color,
+          castShadow: true,
+        } as const;
+
+        return isDir ? (
           <directionalLight
             key={light.id}
-            {...props}
-            castShadow
-            // mapa de sombra bem grande (pesado)
+            {...common}
+            // shadow (pesado)
             shadow-mapSize-width={8192}
             shadow-mapSize-height={8192}
-            // VSM: mais amostras para blur (bordas suaves sem lavar sombra)
             shadow-blurSamples={32}
-            // cobre a folha inteira
             shadow-camera-left={-halfW}
             shadow-camera-right={halfW}
             shadow-camera-top={halfH}
             shadow-camera-bottom={-halfH}
             shadow-camera-near={0.1}
             shadow-camera-far={40000}
-            // acne/bleeding
             shadow-bias={-0.0001}
             shadow-normalBias={0.8}
+            // direção: olha para target
+            target-position={light.target ?? [0, 0, 0]}
           />
         ) : (
           <pointLight
             key={light.id}
-            {...props}
-            castShadow
+            {...common}
+            distance={light.distance ?? 0}
+            decay={light.decay ?? 2}
             shadow-mapSize-width={4096}
             shadow-mapSize-height={4096}
             shadow-camera-near={0.1}

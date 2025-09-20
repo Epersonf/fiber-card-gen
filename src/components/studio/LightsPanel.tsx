@@ -33,6 +33,23 @@ export default function LightsPanel() {
             <label>Y <input type="number" value={light.position[1]} onChange={(e) => updateLight(light.id, { position: [light.position[0], parseFloat(e.target.value), light.position[2]] })} /></label>
             <label>Z <input type="number" value={light.position[2]} onChange={(e) => updateLight(light.id, { position: [light.position[0], light.position[1], parseFloat(e.target.value)] })} /></label>
           </LabelRow>
+          {light.type === 'directional' ? (
+            <>
+              <label>Target</label>
+              <LabelRow>
+                <label>Tx <input type="number" value={light.target?.[0] ?? 0} onChange={(e) => updateLight(light.id, { target: [parseFloat(e.target.value), light.target?.[1] ?? 0, light.target?.[2] ?? 0] })} /></label>
+                <label>Ty <input type="number" value={light.target?.[1] ?? 0} onChange={(e) => updateLight(light.id, { target: [light.target?.[0] ?? 0, parseFloat(e.target.value), light.target?.[2] ?? 0] })} /></label>
+                <label>Tz <input type="number" value={light.target?.[2] ?? 0} onChange={(e) => updateLight(light.id, { target: [light.target?.[0] ?? 0, light.target?.[1] ?? 0, parseFloat(e.target.value)] })} /></label>
+              </LabelRow>
+            </>
+          ) : (
+            <>
+              <LabelRow>
+                <label>Distance <input type="number" min={0} step={1} value={light.distance ?? 0} onChange={(e) => updateLight(light.id, { distance: parseFloat(e.target.value) })} /></label>
+                <label>Decay <input type="number" min={0} step={0.1} value={light.decay ?? 2} onChange={(e) => updateLight(light.id, { decay: parseFloat(e.target.value) })} /></label>
+              </LabelRow>
+            </>
+          )}
           <label>
             Intensity
             <input
@@ -56,11 +73,13 @@ export default function LightsPanel() {
         </DSGroup>
       ))}
       <DSButton onClick={() => addLight({
-        type: 'directional',
-        position: [0, 0, 5],
-        intensity: 3500,
+        type: 'point',
+        position: [0, 0, 500],
+        intensity: 10000,
         color: '#ffffff',
-        enabled: true
+        enabled: true,
+        distance: 4000,
+        decay: 0.15,
       })}>
         Add Light
       </DSButton>
