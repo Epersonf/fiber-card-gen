@@ -1,0 +1,1 @@
+export type HairAmountCurveOpts = 'linear' | 'quad' | 'sqrt';

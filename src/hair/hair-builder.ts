@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { GroupLayout } from "./group-layout";
 import { StudioState } from "../models/studio.int";
 import chroma from "chroma-js";
+import { AmountProfile } from "./ops/amount-profile";
 import { CardFactory } from "./ops/card-factory";
 
 export class HairBuilder {
@@ -29,21 +30,12 @@ export class HairBuilder {
 
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols && idx < totalCards; c++, idx++) {
-        const t = totalCards > 1 ? idx / (totalCards - 1) : 1;
-        const shaped =
-          s.hair_amount_curve === "quad" ? t * t :
-            s.hair_amount_curve === "sqrt" ? Math.sqrt(t) : t;
-
-        const strands = Math.max(1, Math.floor(THREE.MathUtils.lerp(minStrands, maxStrands, shaped)));
+        const strands = AmountProfile.strandsForCard(
+          idx, totalCards, minStrands, maxStrands, s.hair_amount_curve
+        );
 
         const strandGroup = CardFactory.buildCard(
-          seed + idx,
-          points,
-          strands,
-          cellW,
-          cellH,
-          s,
-          gradientSampler
+          seed + idx, points, strands, cellW, cellH, s, gradientSampler
         );
 
         const card = new THREE.Group();

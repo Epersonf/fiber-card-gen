@@ -1,4 +1,5 @@
 import { GradientStop } from "./gradient-stop";
+import { HairAmountCurveOpts } from "./hair-amount-curve";
 import { Light } from "./light.int";
 import { NormalSpace } from "./normal-space.int";
 
@@ -63,7 +64,7 @@ export type StudioState = {
 
   hair_amount_max: number;
   hair_amount_min_percent: number;
-  hair_amount_curve: 'linear' | 'quad' | 'sqrt';
+  hair_amount_curve: HairAmountCurveOpts;
 
   set: (s: Partial<StudioState>) => void;
   addLight: (light: Omit<Light, 'id'>) => void;
