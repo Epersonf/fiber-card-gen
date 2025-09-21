@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import * as THREE from "three";
 import { useThree, useFrame } from "@react-three/fiber";
 import { SceneRendererUtils } from "../../utils/scene-renderer.utils";
@@ -9,6 +9,13 @@ export default function FrameGizmo2D({ targetW, targetH }: { targetW: number; ta
   const studio = useStudio();
   const geomRef = useRef<THREE.BufferGeometry>(null!);
   const lineRef = useRef<THREE.LineSegments>(null!);
+  const groupRef = useRef<THREE.Group | null>(null);
+
+  useEffect(() => {
+    if (groupRef.current) (groupRef.current.userData as any).isFrameGizmo = true;
+  }, []);
+
+  // Debug flag controls whether the gizmo is hidden in exports (handled by scene-renderer).
 
   // 4 lados = 4 pares => 8 vértices (LineSegments liga 0-1, 2-3, 4-5, 6-7)
   const ensureGeom = (count = 8) => {
@@ -82,8 +89,9 @@ export default function FrameGizmo2D({ targetW, targetH }: { targetW: number; ta
     if (lineRef.current) lineRef.current.computeLineDistances();
   });
 
+
   return (
-    <group renderOrder={3000}>
+    <group ref={groupRef} renderOrder={3000}>
       <lineSegments ref={lineRef}>
         <bufferGeometry ref={geomRef} />
         <lineDashedMaterial

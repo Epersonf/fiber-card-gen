@@ -11,6 +11,11 @@ export class SceneRendererUtils {
         planes.push(child);
         child.visible = false;
       }
+      // Hide the frame gizmo only for exports / when debug mode is OFF
+      if (!require("./constants").Constants.DEBUG_MODE && (child as any).userData?.isFrameGizmo) {
+        planes.push(child);
+        child.visible = false;
+      }
     });
     return planes;
   }
