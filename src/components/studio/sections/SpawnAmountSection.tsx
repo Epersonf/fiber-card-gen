@@ -4,6 +4,7 @@ import { Target } from 'lucide-react';
 import LabelRow from "../../ui/label-row/LabelRow";
 import DSSlider from "../../ui/ds-slider/DSSlider";
 import DSInput from "../../ui/ds-input/DSInput";
+import DSCheckbox from "../../ui/ds-checkbox/DSCheckbox";
 import DSSelect from "../../ui/ds-select/DSSelect";
 import { useBufferedNumberInput } from "../../../hooks/useBufferedNumberInput";
 
@@ -13,11 +14,8 @@ export default function SpawnAmountSection() {
   const hairAmountMaxBuf = useBufferedNumberInput(s.hair_amount_max);
 
   return (
-  <CollapsiblePanel title="Spawn & Amount" defaultOpen icon={<Target size={14} />}>
-      <label>
-        Enabled
-        <input type="checkbox" checked={s.spawn_enabled} onChange={e => set({ spawn_enabled: e.target.checked })} />
-      </label>
+    <CollapsiblePanel title="Spawn & Amount" defaultOpen icon={<Target size={14} />}>
+      <DSCheckbox checked={s.spawn_enabled} onChange={e => set({ spawn_enabled: e.target.checked })} label="Enabled" />
 
       <LabelRow>
         <DSSlider label="Radius X" min={0} max={0.5} step={0.005} value={s.spawn_radius_ratio_x}

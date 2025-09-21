@@ -7,6 +7,7 @@ import LabelColumn from "../../ui/label-column/LabelColumn";
 import SizedBox from "../../ui/sized-box/SizedBox";
 import DSInput from "../../ui/ds-input/DSInput";
 import DSSelect from "../../ui/ds-select/DSSelect";
+import DSCheckbox from "../../ui/ds-checkbox/DSCheckbox";
 import { useBufferedNumberInput } from "../../../hooks/useBufferedNumberInput";
 
 export default function LightsPanelSection() {
@@ -51,14 +52,9 @@ function LightEditor({ light, updateLight, removeLight }: LightEditorProps) {
   return (
     <DSGroup title={`Light ${light.id}`}>
       <LabelColumn>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          Enabled
-          <input
-            type="checkbox"
-            checked={light.enabled}
-            onChange={(e) => updateLight(light.id, { enabled: e.target.checked })}
-          />
-        </label>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <DSCheckbox checked={light.enabled} onChange={(e) => updateLight(light.id, { enabled: e.target.checked })} label="Enabled" />
+        </div>
 
         <DSSelect label="Type" value={light.type} onChange={(e) => updateLight(light.id, { type: e.target.value as 'directional' | 'point' })}>
           <option value="directional">Directional</option>
