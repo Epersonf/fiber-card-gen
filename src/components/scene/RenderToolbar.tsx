@@ -3,6 +3,7 @@ import Toolbar from "../ui/toolbar/Toolbar";
 import { useStudio } from "../../store/studio.store";
 import { Image, Layers, Copy, Layout, Download } from "lucide-react";
 import ContextMenu from "../ui/context-menu/ContextMenu";
+import { downloadText } from "../../utils/download.utils";
 
 type Props = {
   onRenderColor: () => void;
@@ -33,15 +34,7 @@ export default function RenderToolbar({ onRenderColor, onRenderNormal, viewMode,
   const downloadConfig = () => {
     const { set, addLight, updateLight, removeLight, ...cfg } = useStudio.getState() as any;
     const json = JSON.stringify(cfg, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'hair-config.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    downloadText('hair-config.json', json, 'application/json');
   };
 
   return (
