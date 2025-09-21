@@ -45,9 +45,6 @@ export type StudioState = {
   frizz_curve_enabled: boolean;
   frizz_curve_points: { x: number; y: number }[];
 
-  enable_delete_hair: boolean;
-  reduce_amount: number;
-
   enable_hair_curl: boolean;
   curl_count: number;
   curl_amount: number;

@@ -15,7 +15,6 @@ const ALLOWED_KEYS: (keyof StudioState)[] = [
   "spread_amount_offset", "clump_root", "clump_tip",
   "hairline_shape",
   "enable_frizz_hair", "frizz_scale", "frizz_curve_enabled", "frizz_curve_points",
-  "enable_delete_hair", "reduce_amount",
   "enable_hair_curl", "curl_count", "curl_amount", "curl_scale",
   "enable_messiness_hair", "messiness_strength", "messiness_scale", "messiness_starting_point", "messiness_amount",
   "spawn_enabled", "spawn_radius_ratio_x", "spawn_radius_ratio_y", "spawn_tilt_deg",

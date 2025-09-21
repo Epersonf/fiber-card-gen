@@ -8,7 +8,6 @@ import HairLengthSection from "./sections/HairLengthSection";
 import HairlineShapeSection from "./sections/HairlineShapeSection";
 import HairSpreadSection from "./sections/HairSpreadSection";
 import HairStrandThicknessSection from "./sections/HairStrandThicknessSection";
-import ReduceHairSection from "./sections/ReduceHairSection";
 import RenderOptionsSection from "./sections/RenderOptionsSection";
 import SpawnAmountSection from "./sections/SpawnAmountSection";
 import StrandPointsSection from "./sections/StrandPointsSection";
@@ -30,7 +29,6 @@ export default function StudioPanel() {
         <HairClumpingSection />
         <HairlineShapeSection />
         <HairFrizzSection />
-        <ReduceHairSection />
         <HairCurlSection />
         <LightsPanelSection />
       </div>

@@ -53,9 +53,6 @@ export const useStudio = create<StudioState>((set, get) => ({
   frizz_curve_enabled: false,
   frizz_curve_points: [{ x: 0, y: 0 }, { x: 0.45, y: 0.7 }, { x: 1, y: 1 }],
 
-  enable_delete_hair: false,
-  reduce_amount: 0.0,
-
   enable_hair_curl: false,
   curl_count: 5,
   curl_amount: 0.0,

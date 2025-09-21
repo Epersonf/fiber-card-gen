@@ -30,7 +30,6 @@ export class CardFactory {
 
     for (let k = 0; k < strands; k++) {
       const curve = StrandFactory.makeStrandCurve(points, cellW, usableH, padBot, cardRand, s);
-      if (s.enable_delete_hair && cardRand() < s.reduce_amount) continue;
 
       // perfil de espessura
       const thicknessArr = ThicknessOps.makeProfileFromCurvePoints(
