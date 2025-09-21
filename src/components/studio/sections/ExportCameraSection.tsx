@@ -10,6 +10,8 @@ import { ColorUtils } from "../../../utils/color.utils";
 export function ExportCameraSection() {
   const studio = useStudio();
   const [baseSizeInput, setBaseSizeInput] = useState<string>(studio.baseSize.toString());
+  const [camOffsetXInput, setCamOffsetXInput] = useState<string>(studio.exportCameraOffset.x.toString());
+  const [camOffsetYInput, setCamOffsetYInput] = useState<string>(studio.exportCameraOffset.y.toString());
 
   const commitBaseSize = () => {
     // parse and clamp to max 512
@@ -55,23 +57,27 @@ export function ExportCameraSection() {
       <LabelColumn>
         <label>Camera Offset</label>
         <DSInput
-          value={studio.exportCameraOffset.x.toString()}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            studio.set({
-              exportCameraOffset: { ...studio.exportCameraOffset, x: parseFloat(e.target.value) || 0 },
-            })
-          }
-          type="number"
+          value={camOffsetXInput}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setCamOffsetXInput(e.target.value)}
+          onBlur={() => {
+            const parsed = parseFloat(camOffsetXInput);
+            studio.set({ exportCameraOffset: { ...studio.exportCameraOffset, x: Number.isNaN(parsed) ? 0 : parsed } });
+            setCamOffsetXInput(String(Number.isNaN(parsed) ? 0 : parsed));
+          }}
+          onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
+          type="text"
           placeholder="X Offset"
         />
         <DSInput
-          value={studio.exportCameraOffset.y.toString()}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            studio.set({
-              exportCameraOffset: { ...studio.exportCameraOffset, y: parseFloat(e.target.value) || 0 },
-            })
-          }
-          type="number"
+          value={camOffsetYInput}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setCamOffsetYInput(e.target.value)}
+          onBlur={() => {
+            const parsed = parseFloat(camOffsetYInput);
+            studio.set({ exportCameraOffset: { ...studio.exportCameraOffset, y: Number.isNaN(parsed) ? 0 : parsed } });
+            setCamOffsetYInput(String(Number.isNaN(parsed) ? 0 : parsed));
+          }}
+          onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
+          type="text"
           placeholder="Y Offset"
         />
       </LabelColumn>
