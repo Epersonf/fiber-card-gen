@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { ExportPngUtils } from "./export-png.utils";
 import { CameraUtils } from "./camera.utils";
+import { useStudio } from "../store/studio.store";
 
 export class SceneRendererUtils {
   static hideCardPlanes(scene: THREE.Scene): THREE.Object3D[] {
@@ -91,7 +92,16 @@ export class SceneRendererUtils {
   ) {
     const cam = CameraUtils.createDefaultOrtho(viewW, viewH);
     const hb = this.hairBounds(scene);
-    if (hb) CameraUtils.frameOrthoToBox(cam, hb, viewW, viewH, 1.06);
+    if (hb) {
+      CameraUtils.frameOrthoToBox(cam, hb, viewW, viewH, 1.06);
+      
+      // Apply export camera settings
+      const studio = useStudio.getState();
+      cam.position.x -= studio.exportCameraOffset.x; // Invertido para coincidir com o gizmo
+      cam.position.y -= studio.exportCameraOffset.y;
+      cam.zoom = 1 / studio.exportCameraScale; // Invertido: zoom out = scale up
+      cam.updateProjectionMatrix();
+    }
 
     const hidden = this.hideCardPlanes(scene);
     const oldClear = renderer.getClearColor(new THREE.Color());
@@ -119,7 +129,16 @@ export class SceneRendererUtils {
   ) {
     const cam = CameraUtils.createDefaultOrtho(viewW, viewH);
     const hb = this.hairBounds(scene);
-    if (hb) CameraUtils.frameOrthoToBox(cam, hb, viewW, viewH, 1.06);
+    if (hb) {
+      CameraUtils.frameOrthoToBox(cam, hb, viewW, viewH, 1.06);
+      
+      // Apply export camera settings
+      const studio = useStudio.getState();
+      cam.position.x -= studio.exportCameraOffset.x; // Invertido para coincidir com o gizmo
+      cam.position.y -= studio.exportCameraOffset.y;
+      cam.zoom = 1 / studio.exportCameraScale; // Invertido: zoom out = scale up
+      cam.updateProjectionMatrix();
+    }
 
     const hidden = this.hideCardPlanes(scene);
     const oldClear = renderer.getClearColor(new THREE.Color());

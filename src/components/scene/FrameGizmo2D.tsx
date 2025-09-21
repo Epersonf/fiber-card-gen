@@ -2,9 +2,11 @@ import { useRef } from "react";
 import * as THREE from "three";
 import { useThree, useFrame } from "@react-three/fiber";
 import { SceneRendererUtils } from "../../utils/scene-renderer.utils";
+import { useStudio } from "../../store/studio.store";
 
 export default function FrameGizmo2D({ targetW, targetH }: { targetW: number; targetH: number }) {
   const { scene } = useThree();
+  const studio = useStudio();
   const geomRef = useRef<THREE.BufferGeometry>(null!);
   const lineRef = useRef<THREE.LineSegments>(null!);
 
@@ -36,10 +38,28 @@ export default function FrameGizmo2D({ targetW, targetH }: { targetW: number; ta
       w = h * aspect;
     }
 
-    const left = center.x - w / 2;
-    const right = center.x + w / 2;
-    const top = center.y + h / 2;
-    const bottom = center.y - h / 2;
+    // Apply export camera scale
+    const scale = studio.exportCameraScale;
+    w *= scale;
+    h *= scale;
+
+    // Adjust aspect ratio to match target dimensions
+    const targetAspect = targetW / targetH;
+    const currentAspect = w / h;
+
+    if (currentAspect > targetAspect) {
+      // Too wide - adjust width
+      w = h * targetAspect;
+    } else {
+      // Too tall - adjust height
+      h = w / targetAspect;
+    }
+
+    // Apply camera offset with inverted sign (moving camera right = moving content left)
+    const left = center.x - w / 2 - studio.exportCameraOffset.x;
+    const right = center.x + w / 2 - studio.exportCameraOffset.x;
+    const top = center.y + h / 2 - studio.exportCameraOffset.y;
+    const bottom = center.y - h / 2 - studio.exportCameraOffset.y;
 
     ensureGeom();
     const posAttr = geomRef.current.getAttribute("position") as THREE.BufferAttribute;

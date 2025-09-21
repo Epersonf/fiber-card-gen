@@ -27,11 +27,14 @@ export class ExportPngUtils {
     const tol2 = 2 * 2; // tolerância^2 (2 níveis)
     const imageData = ctx.createImageData(w, h);
 
-    // Copiar e inverter verticalmente os pixels
+    // WebGL tem Y crescendo para cima, Canvas tem Y crescendo para baixo
+    // Precisamos apenas inverter verticalmente os pixels
     for (let y = 0; y < h; y++) {
+      const srcY = h - 1 - y; // Inverte verticalmente
+      
       for (let x = 0; x < w; x++) {
-        const srcIndex = (y * w + x) * 4;
-        const dstIndex = ((h - 1 - y) * w + x) * 4;
+        const srcIndex = (srcY * w + x) * 4;
+        const dstIndex = (y * w + x) * 4;
 
         const r = pixels[srcIndex];
         const g = pixels[srcIndex + 1];

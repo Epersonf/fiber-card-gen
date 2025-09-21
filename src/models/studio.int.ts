@@ -1,13 +1,19 @@
 import { GradientStop } from "./gradient-stop";
 import { HairAmountCurveOpts } from "./hair-amount-curve";
 import { Light } from "./light.int";
+import { Vector2 } from "./vector2";
 
 export type StudioState = {
   lights: Light[];
 
+  // Base render dimensions
   baseWidth: number;
   baseHeight: number;
   percentage: number;
+
+  // Export camera properties
+  exportCameraOffset: Vector2;
+  exportCameraScale: number;
   cardsPerSheet: number;
   background_color: string;
 

@@ -10,13 +10,7 @@ export default function RenderOptionsSection() {
   const gridRows = Math.ceil(s.cardsPerSheet / gridCols);
 
   return (
-    <CollapsiblePanel title="Render Options" defaultOpen>
-      <label>Base Width <input type="number" value={s.baseWidth} onChange={e => set({ baseWidth: +e.target.value })} /></label>
-      <SizedBox height={10} />
-      <label>Base Height <input type="number" value={s.baseHeight} onChange={e => set({ baseHeight: +e.target.value })} /></label>
-      <SizedBox height={10} />
-      <DSSlider label="Percentage" min={0.35} max={1.5} step={0.05} value={s.percentage} onChange={e => set({ percentage: +e.target.value })} displayValue={`${(s.percentage * 100).toFixed(0)}%`} />
-      <SizedBox height={10} />
+    <CollapsiblePanel title="Cards Options" defaultOpen>
       <label>Cards per Sheet <input type="number" min={1} value={s.cardsPerSheet} onChange={e => set({ cardsPerSheet: +e.target.value })} /></label>
       <SizedBox height={10} />
       <label>Grid Layout <span>{gridCols} × {gridRows}</span></label>

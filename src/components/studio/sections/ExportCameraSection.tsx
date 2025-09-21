@@ -1,0 +1,86 @@
+import { CollapsiblePanel } from "../../ui/collapsible-panel/CollapsiblePanel";
+import { useStudio } from "../../../store/studio.store";
+import { ChangeEvent } from "react";
+import DSInput from "../../ui/ds-input/DSInput";
+import DSSlider from "../../ui/ds-slider/DSSlider";
+import LabelColumn from "../../ui/label-column/LabelColumn";
+
+export function ExportCameraSection() {
+  const studio = useStudio();
+
+  return (
+    <CollapsiblePanel title="Export Camera">
+      <LabelColumn>
+        <label>Base Dimensions</label>
+        <DSInput
+          value={studio.baseWidth.toString()}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            studio.set({ baseWidth: parseInt(e.target.value) || 0 })
+          }
+          type="number"
+          placeholder="Base Width"
+        />
+        <DSInput
+          value={studio.baseHeight.toString()}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            studio.set({ baseHeight: parseInt(e.target.value) || 0 })
+          }
+          type="number"
+          placeholder="Base Height"
+        />
+      </LabelColumn>
+
+      <LabelColumn>
+        <label>Resolution Scale</label>
+        <DSSlider
+          min={0.1}
+          max={2}
+          step={0.05}
+          value={studio.percentage}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => 
+            studio.set({ percentage: Number(e.target.value) })
+          }
+          displayValue={`${(studio.percentage * 100).toFixed(0)}%`}
+        />
+      </LabelColumn>
+
+      <LabelColumn>
+        <label>Camera Offset</label>
+        <DSInput
+          value={studio.exportCameraOffset.x.toString()}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            studio.set({
+              exportCameraOffset: { ...studio.exportCameraOffset, x: parseFloat(e.target.value) || 0 },
+            })
+          }
+          type="number"
+          placeholder="X Offset"
+        />
+        <DSInput
+          value={studio.exportCameraOffset.y.toString()}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            studio.set({
+              exportCameraOffset: { ...studio.exportCameraOffset, y: parseFloat(e.target.value) || 0 },
+            })
+          }
+          type="number"
+          placeholder="Y Offset"
+        />
+      </LabelColumn>
+
+      <LabelColumn>
+        <label>Camera Scale</label>
+        <DSSlider
+          min={0.1}
+          max={2}
+          step={0.05}
+          value={studio.exportCameraScale}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => 
+            studio.set({ exportCameraScale: Number(e.target.value) })
+          }
+          displayValue={`${(studio.exportCameraScale * 100).toFixed(0)}%`}
+        />
+      </LabelColumn>
+    </CollapsiblePanel>
+  );
+}

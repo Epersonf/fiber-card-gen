@@ -14,10 +14,13 @@ export const useStudio = create<StudioState>((set, get) => ({
   ],
   background_color: '#202425',
 
-  baseWidth: 6700,
+  baseWidth: 3000,
   baseHeight: 3000,
   percentage: 1.0,
   cardsPerSheet: 9,
+
+  exportCameraOffset: { x: 0, y: 0 },
+  exportCameraScale: 1.0,
 
   strand_points_count: 25,
 

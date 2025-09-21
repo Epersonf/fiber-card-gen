@@ -13,12 +13,14 @@ import RenderOptionsSection from "./sections/RenderOptionsSection";
 import SpawnAmountSection from "./sections/SpawnAmountSection";
 import StrandPointsSection from "./sections/StrandPointsSection";
 import LightsPanelSection from "./sections/LightsPanelSection";
+import { ExportCameraSection } from "./sections/ExportCameraSection";
 
 export default function StudioPanel() {
   return (
     <Panel>
       <div className="studio-panel">
         <RenderOptionsSection />
+        <ExportCameraSection />
         <SpawnAmountSection />
         <StrandPointsSection />
         <HairColorSection />
