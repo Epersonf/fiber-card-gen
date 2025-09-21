@@ -12,6 +12,7 @@ interface CurveEditorProps {
 export default function CurveEditor({ points, onChange, width = 240, height = 80 }: CurveEditorProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const draggingRef = useRef<number | null>(null);
+  const selectedRef = useRef<number | null>(null);
   const POINT_RADIUS = 5;
 
   useEffect(() => {
@@ -34,47 +35,65 @@ export default function CurveEditor({ points, onChange, width = 240, height = 80
       ctx.fillStyle = 'rgba(255,255,255,0.02)';
       ctx.fillRect(0, 0, cssWidth, cssHeight);
 
-      // draw curve (quadratic Bezier via points[0], points[1], points[2])
+      // draw curve (smooth through N points). If <2 points, nothing to draw.
       ctx.strokeStyle = '#7aa7ff';
       ctx.lineWidth = 2;
-      ctx.beginPath();
-      // ensure sampling points are also clamped to a small margin so curve cannot render outside
-      const clampX = (v: number) => Math.min(cssWidth - POINT_RADIUS, Math.max(POINT_RADIUS, v));
-      const clampY = (v: number) => Math.min(cssHeight - POINT_RADIUS, Math.max(POINT_RADIUS, v));
-      const p0 = { x: clampX(points[0].x * cssWidth), y: clampY((1 - points[0].y) * cssHeight) };
-      const p1 = { x: clampX(points[1].x * cssWidth), y: clampY((1 - points[1].y) * cssHeight) };
-      const p2 = { x: clampX(points[2].x * cssWidth), y: clampY((1 - points[2].y) * cssHeight) };
-      ctx.moveTo(p0.x, p0.y);
-      // Render quadratic bezier by sampling
-      const steps = 64;
-      for (let i = 1; i <= steps; i++) {
-        const t = i / steps;
-        const u = 1 - t;
-        const x = u * u * p0.x + 2 * u * t * p1.x + t * t * p2.x;
-        const y = u * u * p0.y + 2 * u * t * p1.y + t * t * p2.y;
-        ctx.lineTo(x, y);
+      if (points.length >= 2) {
+        // compute clamped canvas-space points
+        const clampX = (v: number) => Math.min(cssWidth - POINT_RADIUS, Math.max(POINT_RADIUS, v));
+        const clampY = (v: number) => Math.min(cssHeight - POINT_RADIUS, Math.max(POINT_RADIUS, v));
+        const pts = points.map(p => ({ x: clampX(p.x * cssWidth), y: clampY((1 - p.y) * cssHeight) }));
+
+        ctx.beginPath();
+        // move to first
+        ctx.moveTo(pts[0].x, pts[0].y);
+        // use quadratic smoothing: for each segment use midpoint as end point and previous point as control
+        for (let i = 1; i < pts.length; i++) {
+          const prev = pts[i - 1];
+          const cur = pts[i];
+          const midX = (prev.x + cur.x) / 2;
+          const midY = (prev.y + cur.y) / 2;
+          ctx.quadraticCurveTo(prev.x, prev.y, midX, midY);
+        }
+        // finish to last point
+        const last = pts[pts.length - 1];
+        const secondLast = pts[pts.length - 2];
+        ctx.quadraticCurveTo(secondLast.x, secondLast.y, last.x, last.y);
+        ctx.stroke();
       }
-      ctx.stroke();
 
       // draw control points (ensure they remain visible within canvas)
       ctx.fillStyle = '#ffffff';
       ctx.strokeStyle = '#000000';
-      for (let i = 0; i < 3; i++) {
-        const p = [p0, p1, p2][i];
-        const cx = Math.min(cssWidth - POINT_RADIUS, Math.max(POINT_RADIUS, p.x));
-        const cy = Math.min(cssHeight - POINT_RADIUS, Math.max(POINT_RADIUS, p.y));
+      // draw control points for all points
+      const drawPts = points.map(p => ({ x: Math.min(cssWidth - POINT_RADIUS, Math.max(POINT_RADIUS, p.x * cssWidth)), y: Math.min(cssHeight - POINT_RADIUS, Math.max(POINT_RADIUS, (1 - p.y) * cssHeight)) }));
+      for (let i = 0; i < drawPts.length; i++) {
+        const p = drawPts[i];
         ctx.beginPath();
-        ctx.arc(cx, cy, POINT_RADIUS, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
+        if (selectedRef.current === i) {
+          // highlight selected point
+          ctx.fillStyle = '#7aa7ff';
+          ctx.strokeStyle = '#003a8c';
+          ctx.arc(p.x, p.y, POINT_RADIUS + 1.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          // reset styles for others
+          ctx.fillStyle = '#ffffff';
+          ctx.strokeStyle = '#000000';
+        } else {
+          ctx.arc(p.x, p.y, POINT_RADIUS, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+        }
       }
     };
 
-    // initial draw
-    draw();
+  // initial draw
+  draw();
 
-    // redraw on resize / layout change
-    const onWinResize = () => draw();
+  // redraw on resize / layout change
+  const onWinResize = () => draw();
+  const onInvalidate = () => draw();
     window.addEventListener('resize', onWinResize);
     // try ResizeObserver for more accurate container resize handling
     let ro: ResizeObserver | null = null;
@@ -82,12 +101,59 @@ export default function CurveEditor({ points, onChange, width = 240, height = 80
       ro = new (window as any).ResizeObserver(() => draw());
       if (ro && canvas) ro.observe(canvas);
     }
+    window.addEventListener('curveeditor:invalidate', onInvalidate as EventListener);
+  // double-click to add point (if not near existing point)
+    const onDbl = (ev: MouseEvent) => {
+      const rect2 = canvas.getBoundingClientRect();
+      const cssW = rect2.width || width;
+      const cssH = rect2.height || height;
+      const x = ev.clientX - rect2.left;
+      const y = ev.clientY - rect2.top;
+      // find closest existing point
+      let best = -1;
+      let bestDist = Infinity;
+      for (let i = 0; i < points.length; i++) {
+        const px = points[i].x * cssW;
+        const py = (1 - points[i].y) * cssH;
+        const d = Math.hypot(px - x, py - y);
+        if (d < bestDist) { best = i; bestDist = d; }
+      }
+      // if near existing point, delete it
+      if (bestDist < POINT_RADIUS * 1.5 && best >= 0) {
+        const next = points.filter((_, i) => i !== best);
+        onChange(next);
+        selectedRef.current = null;
+        return;
+      }
+      // otherwise insert new point (normalized coords)
+      const nx = Math.min(1, Math.max(0, x / cssW));
+      const ny = Math.min(1, Math.max(0, 1 - y / cssH));
+      const next = [...points, { x: nx, y: ny }].sort((a, b) => a.x - b.x);
+      onChange(next);
+    };
+    canvas.addEventListener('dblclick', onDbl);
+
+    const onKey = (ev: KeyboardEvent) => {
+      if (!selectedRef.current && selectedRef.current !== 0) return;
+      if (ev.key === 'Delete' || ev.key === 'Backspace') {
+        const idx = selectedRef.current as number;
+        if (idx >= 0 && idx < points.length) {
+          const next = points.filter((_, i) => i !== idx);
+          selectedRef.current = null;
+          onChange(next);
+        }
+      }
+    };
+    window.addEventListener('keydown', onKey);
 
     return () => {
       window.removeEventListener('resize', onWinResize);
+      window.removeEventListener('curveeditor:invalidate', onInvalidate as EventListener);
       if (ro) ro.disconnect();
+      canvas.removeEventListener('dblclick', onDbl);
+      window.removeEventListener('keydown', onKey);
     };
-  }, [points, width, height]);
+  }, [points, width, height, onChange]);
 
   useEffect(() => {
     const canvas = canvasRef.current!;
@@ -114,7 +180,7 @@ export default function CurveEditor({ points, onChange, width = 240, height = 80
       // find closest control point (in CSS pixels)
       let best = -1;
       let bestDist = Infinity;
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < points.length; i++) {
         const px = points[i].x * cssW;
         const py = (1 - points[i].y) * cssH;
         const d = Math.hypot(px - pos.x, py - pos.y);
@@ -123,7 +189,12 @@ export default function CurveEditor({ points, onChange, width = 240, height = 80
       // require selection to be within a reasonable radius (use POINT_RADIUS*2)
       if (bestDist < POINT_RADIUS * 2) {
         draggingRef.current = best;
+        selectedRef.current = best;
+      } else {
+        selectedRef.current = null;
       }
+      // redraw immediately to show selection
+      window.dispatchEvent(new Event('curveeditor:invalidate'));
     };
 
     const onMove = (e: MouseEvent | TouchEvent) => {

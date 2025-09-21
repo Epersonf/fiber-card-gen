@@ -9,10 +9,8 @@ export default function HairFrizzSection() {
   const s = useStudio(); const set = useStudio(st => st.set);
 
   const onCurveChange = (pts: { x: number; y: number }[]) => {
-    // ensure we clamp to 0..1 and keep three points
-    const clamped = pts.slice(0, 3).map(p => ({ x: Math.min(1, Math.max(0, p.x)), y: Math.min(1, Math.max(0, p.y)) }));
-    // if fewer than 3, pad
-    while (clamped.length < 3) clamped.push({ x: 1, y: 1 });
+    // accept N points: clamp each coordinate to 0..1 and store them
+    const clamped = pts.map(p => ({ x: Math.min(1, Math.max(0, p.x)), y: Math.min(1, Math.max(0, p.y)) }));
     set({ frizz_curve_points: clamped });
   };
 
