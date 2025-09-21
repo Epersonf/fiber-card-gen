@@ -30,6 +30,20 @@ export default function RenderToolbar({ onRenderColor, onRenderNormal, viewMode,
     }
   };
 
+  const downloadConfig = () => {
+    const { set, addLight, updateLight, removeLight, ...cfg } = useStudio.getState() as any;
+    const json = JSON.stringify(cfg, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'hair-config.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <Toolbar>
       <DSButton onClick={() => setViewMode(viewMode === '2D' ? '3D' : '2D')}>
@@ -62,7 +76,8 @@ export default function RenderToolbar({ onRenderColor, onRenderNormal, viewMode,
         align="right"
         items={[
           { key: 'copy', label: 'Copy Config', onClick: copyConfig },
-          // Download and Export options will be added later
+          { key: 'download', label: 'Download Config', onClick: downloadConfig },
+          // Export FBX/GLB will be added later
         ]}
       />
     </Toolbar>
