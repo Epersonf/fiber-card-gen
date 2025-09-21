@@ -1,7 +1,7 @@
 import DSButton from "../ui/ds-button/DSButton";
 import Toolbar from "../ui/toolbar/Toolbar";
 import { useStudio } from "../../store/studio.store";
-import { Image, Layers, Copy, Layout } from "lucide-react";
+import { Image, Copy, Layout } from "lucide-react";
 import ContextMenu from "../ui/context-menu/ContextMenu";
 import { ExportUtils } from "../../utils/export.utils";
 
@@ -46,18 +46,21 @@ export default function RenderToolbar({ onRenderColor, onRenderNormal, onExportG
           {viewMode === '2D' ? '3D View' : '2D View'}
         </span>
       </DSButton>
-      <DSButton onClick={onRenderColor}>
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-          <Image size={16} style={{ marginRight: 8 }} />
-          Render Color
-        </span>
-      </DSButton>
-      <DSButton onClick={onRenderNormal}>
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-          <Layers size={16} style={{ marginRight: 8 }} />
-          Render Normal
-        </span>
-      </DSButton>
+      <ContextMenu
+        trigger={(
+          <DSButton>
+            <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+              <Image size={16} style={{ marginRight: 8 }} />
+              Render
+            </span>
+          </DSButton>
+        )}
+        align="right"
+        items={[
+          { key: 'color', label: 'Render Color', onClick: onRenderColor },
+          { key: 'normal', label: 'Render Normal', onClick: onRenderNormal },
+        ]}
+      />
       <ContextMenu
         trigger={(
           <DSButton>
