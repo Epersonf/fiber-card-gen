@@ -86,4 +86,15 @@ export const useStudio = create<StudioState>((set, get) => ({
   removeLight: (id) => set((state) => ({
     lights: state.lights.filter(light => light.id !== id)
   })),
+  importConfig: (cfg: Partial<any>) => {
+    // Only apply keys that exist in the current state to avoid injecting functions or unexpected values
+    const current = get();
+    const allowed: any = {};
+    Object.keys(cfg).forEach((k) => {
+      if (k in current && k !== 'set' && k !== 'addLight' && k !== 'updateLight' && k !== 'removeLight') {
+        (allowed as any)[k] = (cfg as any)[k];
+      }
+    });
+    set(allowed as any);
+  },
 }));

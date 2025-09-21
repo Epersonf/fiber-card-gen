@@ -1,7 +1,7 @@
 import DSButton from "../ui/ds-button/DSButton";
 import Toolbar from "../ui/toolbar/Toolbar";
 import { useStudio } from "../../store/studio.store";
-import { Image, Copy, Layout } from "lucide-react";
+import { Image, ArrowUp, ArrowDown, Layout } from "lucide-react";
 import ContextMenu from "../ui/context-menu/ContextMenu";
 import { ExportUtils } from "../../utils/export.utils";
 
@@ -38,6 +38,30 @@ export default function RenderToolbar({ onRenderColor, onRenderNormal, onExportG
     ExportUtils.downloadText('hair-config.json', json, 'application/json');
   };
 
+  const importConfig = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,application/json';
+    input.onchange = async (e: any) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const parsed = JSON.parse(text);
+        const { importConfig: storeImport } = useStudio.getState() as any;
+        if (typeof storeImport === 'function') {
+          storeImport(parsed);
+        } else {
+          console.warn('store.importConfig not available');
+        }
+      } catch (err) {
+        console.error('Failed to import config', err);
+        alert('Failed to import config: ' + (err as any).message);
+      }
+    };
+    input.click();
+  };
+
   return (
     <Toolbar>
       <DSButton onClick={() => setViewMode(viewMode === '2D' ? '3D' : '2D')}>
@@ -65,7 +89,45 @@ export default function RenderToolbar({ onRenderColor, onRenderNormal, onExportG
         trigger={(
           <DSButton>
             <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-              <Copy size={16} style={{ marginRight: 8 }} />
+              <ArrowDown size={16} style={{ marginRight: 8 }} />
+              Import
+            </span>
+          </DSButton>
+        )}
+        align="right"
+        items={[
+          { key: 'file', label: 'Import Config', onClick: importConfig },
+          { key: 'clipboard', label: 'Apply from clipboard', onClick: async () => {
+            try {
+              if (!navigator.clipboard || !navigator.clipboard.readText) {
+                alert('Clipboard API not available');
+                return;
+              }
+              const text = await navigator.clipboard.readText();
+              if (!text) {
+                alert('Clipboard is empty');
+                return;
+              }
+              const parsed = JSON.parse(text);
+              const { importConfig: storeImport } = useStudio.getState() as any;
+              if (typeof storeImport === 'function') {
+                storeImport(parsed);
+                alert('Config applied from clipboard');
+              } else {
+                console.warn('store.importConfig not available');
+              }
+            } catch (err) {
+              console.error('Failed to apply from clipboard', err);
+              alert('Failed to apply from clipboard: ' + (err as any).message);
+            }
+          } },
+        ]}
+      />
+      <ContextMenu
+        trigger={(
+          <DSButton>
+            <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+              <ArrowUp size={16} style={{ marginRight: 8 }} />
               Export
             </span>
           </DSButton>
