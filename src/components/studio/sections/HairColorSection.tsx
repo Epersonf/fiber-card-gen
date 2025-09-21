@@ -1,4 +1,5 @@
 import { useStudio } from "../../../store/studio.store";
+import DSCheckbox from "../../ui/ds-checkbox/DSCheckbox";
 import { CollapsiblePanel } from "../../ui/collapsible-panel/CollapsiblePanel";
 import { Image as ImageIcon } from 'lucide-react';
 import LabelColumn from "../../ui/label-column/LabelColumn";
@@ -14,7 +15,7 @@ export default function HairColorSection() {
       <LabelColumn>
         <label>
           Gradient Color
-          <input type="checkbox" checked={s.gradient_color_enabled} onChange={e => set({ gradient_color_enabled: e.target.checked })} />
+          <DSCheckbox checked={s.gradient_color_enabled} onChange={e => set({ gradient_color_enabled: e.target.checked })} />
         </label>
         {s.gradient_color_enabled ? (
           <GradientStopsEditor />

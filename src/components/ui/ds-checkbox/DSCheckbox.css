@@ -1,0 +1,16 @@
+.ds-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.ds-checkbox {
+  width: 16px;
+  height: 16px;
+}
+
+.ds-checkbox-text {
+  font-size: 13px;
+  color: var(--text, #e6eef6);
+}

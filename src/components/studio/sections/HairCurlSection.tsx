@@ -1,4 +1,5 @@
 import { useStudio } from "../../../store/studio.store";
+import DSCheckbox from "../../ui/ds-checkbox/DSCheckbox";
 import { CollapsiblePanel } from "../../ui/collapsible-panel/CollapsiblePanel";
 import { RotateCw } from 'lucide-react';
 import DSSlider from "../../ui/ds-slider/DSSlider";
@@ -15,7 +16,7 @@ export default function HairCurlSection() {
       <LabelColumn>
 
         <DSSlider label="Shape" min={0} max={20} step={0.01} value={s.curl_shape} onChange={e => set({ curl_shape: +e.target.value })} />
-        <label><input type="checkbox" checked={s.enable_hair_curl} onChange={e => set({ enable_hair_curl: e.target.checked })} /> Enable Hair Curl</label>
+  <label><DSCheckbox checked={s.enable_hair_curl} onChange={e => set({ enable_hair_curl: e.target.checked })} label="Enable Hair Curl" /></label>
         {s.enable_hair_curl && (
           <>
             <label>Count

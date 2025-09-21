@@ -1,4 +1,5 @@
 import { useStudio } from "../../../store/studio.store";
+import DSCheckbox from "../../ui/ds-checkbox/DSCheckbox";
 import { CollapsiblePanel } from "../../ui/collapsible-panel/CollapsiblePanel";
 import { Wind } from 'lucide-react';
 import DSSlider from "../../ui/ds-slider/DSSlider";
@@ -18,14 +19,14 @@ export default function HairFrizzSection() {
     <CollapsiblePanel title="Hair Frizz" defaultOpen={false} icon={<Wind size={14} />}>
       <LabelColumn>
         <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <input type="checkbox" checked={s.enable_frizz_hair} onChange={e => set({ enable_frizz_hair: e.target.checked })} /> Enable Hair Frizz
+          <DSCheckbox checked={s.enable_frizz_hair} onChange={e => set({ enable_frizz_hair: e.target.checked })} label="Enable Hair Frizz" />
         </label>
         {s.enable_frizz_hair && (
           <>
             <DSSlider label="Scale" min={0} max={50} step={0.01} value={s.frizz_scale} onChange={e => set({ frizz_scale: +e.target.value })} />
             <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               Curve Enabled
-              <input type="checkbox" checked={s.frizz_curve_enabled} onChange={e => set({ frizz_curve_enabled: e.target.checked })} />
+              <DSCheckbox checked={s.frizz_curve_enabled} onChange={e => set({ frizz_curve_enabled: e.target.checked })} />
             </label>
             {s.frizz_curve_enabled && (
               <div style={{ paddingTop: 8 }}>
