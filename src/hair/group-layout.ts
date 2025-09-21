@@ -36,9 +36,10 @@ export class GroupLayout {
     // base grid position
     let x = -W / 2 + cellW / 2 + col * cellW;
     let y = H / 2 - cellH / 2 - row * cellH;
-    // apply user-configurable card offsets (in world units)
-    const offsetX = (s.cardsOffset?.x ?? 0) / s.baseSize * W; // convert pixels to world units relative to sheet
-    const offsetY = (s.cardsOffset?.y ?? 0) / s.baseSize * H;
+  // apply user-configurable card offsets (stored as fraction of baseSize)
+  // cardsOffset.x/y are fractions (px / baseSize), so multiply by W/H to get world units
+  const offsetX = (s.cardsOffset?.x ?? 0) * W;
+  const offsetY = (s.cardsOffset?.y ?? 0) * H;
     x += offsetX * (col - (cols - 1) / 2);
     y -= offsetY * (row - (rows - 1) / 2);
     return new THREE.Vector3(x, y, 0);

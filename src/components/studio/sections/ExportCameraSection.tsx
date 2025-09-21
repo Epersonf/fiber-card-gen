@@ -20,7 +20,7 @@ export function ExportCameraSection() {
       }
       // Enforce a minimum of 512 (do not allow values below 512)
       const clamped = Math.max(parsed, 512);
-    studio.set({ baseSize: clamped });
+  studio.set({ baseSize: clamped });
     setBaseSizeInput(clamped.toString());
   };
 

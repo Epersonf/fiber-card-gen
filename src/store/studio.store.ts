@@ -20,7 +20,8 @@ export const useStudio = create<StudioState>((set, get) => ({
   cardsPerSheet: 12,
 
   exportCameraOffset: { x: 0, y: 0 },
-  cardsOffset: { x: -150, y: -150 },
+  // store offsets as normalized fraction of baseSize (px / baseSize)
+  cardsOffset: { x: -150 / Constants.DESIGN_SHEET, y: -150 / Constants.DESIGN_SHEET },
   exportCameraScale: 1.0,
   background_alpha: 0,
 

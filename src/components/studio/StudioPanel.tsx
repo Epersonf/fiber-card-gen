@@ -8,7 +8,7 @@ import HairLengthSection from "./sections/HairLengthSection";
 import HairlineShapeSection from "./sections/HairlineShapeSection";
 import HairSpreadSection from "./sections/HairSpreadSection";
 import HairStrandThicknessSection from "./sections/HairStrandThicknessSection";
-import RenderOptionsSection from "./sections/RenderOptionsSection";
+import CardOptionsSection from "./sections/CardOptionsSection";
 import SpawnAmountSection from "./sections/SpawnAmountSection";
 import StrandPointsSection from "./sections/StrandPointsSection";
 import LightsPanelSection from "./sections/LightsPanelSection";
@@ -18,7 +18,7 @@ export default function StudioPanel() {
   return (
     <Panel>
       <div className="studio-panel">
-        <RenderOptionsSection />
+        <CardOptionsSection />
         <ExportCameraSection />
         <SpawnAmountSection />
         <StrandPointsSection />
