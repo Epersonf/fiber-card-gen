@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { ExportPngUtils } from "./export-png.utils";
 import { CameraUtils } from "./camera.utils";
 import { useStudio } from "../store/studio.store";
+import { EXPORT_FRAME_MARGIN } from "./constants";
 
 export class SceneRendererUtils {
   static hideCardPlanes(scene: THREE.Scene): THREE.Object3D[] {
@@ -93,14 +94,42 @@ export class SceneRendererUtils {
     const cam = CameraUtils.createDefaultOrtho(viewW, viewH);
     const hb = this.hairBounds(scene);
     if (hb) {
-      CameraUtils.frameOrthoToBox(cam, hb, viewW, viewH, 1.06);
-      
-      // Apply export camera settings
+      // Compute bounds in world units and apply margin
+      const size = new THREE.Vector3();
+      hb.getSize(size);
+      const center = new THREE.Vector3();
+      hb.getCenter(center);
+
+      const margin = EXPORT_FRAME_MARGIN;
+      let w = size.x * margin;
+      let h = size.y * margin;
+
+      const targetAspect = viewW / Math.max(1, viewH);
+      const boxAspect = w / Math.max(1e-6, h);
+      if (boxAspect > targetAspect) {
+        h = w / targetAspect;
+      } else {
+        w = h * targetAspect;
+      }
+
       const studio = useStudio.getState();
-      cam.position.x -= studio.exportCameraOffset.x;
-      const empiricBaseOffsetPNGFromWebGL = viewH * 0.15;
-      cam.position.y -= empiricBaseOffsetPNGFromWebGL;
-      cam.zoom = 1 / studio.exportCameraScale;
+      // Scale the frame (world units)
+      w *= studio.exportCameraScale;
+      h *= studio.exportCameraScale;
+
+      // Offset the center by the configured exportCameraOffset (world units)
+      const cx = center.x - studio.exportCameraOffset.x;
+      const cy = center.y - studio.exportCameraOffset.y;
+
+      cam.left = cx - w / 2;
+      cam.right = cx + w / 2;
+      cam.top = cy + h / 2;
+      cam.bottom = cy - h / 2;
+
+      cam.near = -10000;
+      cam.far = 10000;
+      cam.position.set(cx, cy, 10);
+      cam.zoom = 1; // keep 1 since frame already scaled
       cam.updateProjectionMatrix();
     }
 
@@ -131,13 +160,39 @@ export class SceneRendererUtils {
     const cam = CameraUtils.createDefaultOrtho(viewW, viewH);
     const hb = this.hairBounds(scene);
     if (hb) {
-      CameraUtils.frameOrthoToBox(cam, hb, viewW, viewH, 1.06);
-      
-      // Apply export camera settings
+      const size = new THREE.Vector3();
+      hb.getSize(size);
+      const center = new THREE.Vector3();
+      hb.getCenter(center);
+
+      const margin = EXPORT_FRAME_MARGIN;
+      let w = size.x * margin;
+      let h = size.y * margin;
+
+      const targetAspect = viewW / Math.max(1, viewH);
+      const boxAspect = w / Math.max(1e-6, h);
+      if (boxAspect > targetAspect) {
+        h = w / targetAspect;
+      } else {
+        w = h * targetAspect;
+      }
+
       const studio = useStudio.getState();
-      cam.position.x -= studio.exportCameraOffset.x;
-      cam.position.y -= viewH * 0.15; // Offset fixo de 15% da altura
-      cam.zoom = 1 / studio.exportCameraScale;
+      w *= studio.exportCameraScale;
+      h *= studio.exportCameraScale;
+
+      const cx = center.x - studio.exportCameraOffset.x;
+      const cy = center.y - studio.exportCameraOffset.y;
+
+      cam.left = cx - w / 2;
+      cam.right = cx + w / 2;
+      cam.top = cy + h / 2;
+      cam.bottom = cy - h / 2;
+
+      cam.near = -10000;
+      cam.far = 10000;
+      cam.position.set(cx, cy, 10);
+      cam.zoom = 1;
       cam.updateProjectionMatrix();
     }
 

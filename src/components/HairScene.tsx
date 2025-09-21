@@ -15,6 +15,7 @@ import { SceneRendererUtils } from "../utils/scene-renderer.utils";
 import LightGizmos from "./scene/LightGizmos";
 import SpawnPlaneGizmo from "./scene/SpawnPlaneGizmo";
 import FrameGizmo2D from "./scene/FrameGizmo2D";
+import { GroupLayout } from "../hair/group-layout";
 
 export default function HairScene() {
   const s = useStudio();
@@ -22,8 +23,9 @@ export default function HairScene() {
   const exportSize = Math.floor(s.baseSize * s.percentage);
   const exportW = exportSize;
   const exportH = exportSize;
-  const viewW = s.baseSize;
-  const viewH = s.baseSize;
+  // viewW/viewH represent the world sheet size; derive from GroupLayout so
+  // changes to baseSize only affect export resolution, not world scale.
+  const { W: viewW, H: viewH } = GroupLayout.computeSheetSize(s);
 
   const [viewMode, setViewMode] = useState<"2D" | "3D">("2D");
   const [scene, setScene] = useState<THREE.Scene | null>(null);

@@ -1,11 +1,14 @@
 // src/components/scene/Lights.tsx
 import { useStudio } from "../../store/studio.store";
+import { GroupLayout } from "../../hair/group-layout";
 
 export default function Lights() {
-  const { lights, baseSize } = useStudio();
+  const { lights } = useStudio();
+  const s = useStudio();
+  const { W, H } = GroupLayout.computeSheetSize(s);
 
-  const halfW = baseSize / 2;
-  const halfH = baseSize / 2;
+  const halfW = W / 2;
+  const halfH = H / 2;
 
   return (
     <>

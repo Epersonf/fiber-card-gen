@@ -1,14 +1,18 @@
 // src/components/scene/LightGizmos.tsx
 import * as THREE from "three";
 import { useStudio } from "../../store/studio.store";
+import { GroupLayout } from "../../hair/group-layout";
 
 type Props = { enabled: boolean };
 
 export default function LightGizmos({ enabled }: Props) {
-  const { lights, baseSize } = useStudio();
+  const { lights } = useStudio();
+  const s = useStudio();
   if (!enabled) return null;
 
-  const base = Math.max(baseSize * 0.03, 60);
+  const { W, H } = GroupLayout.computeSheetSize(s);
+  const sheet = Math.min(W, H);
+  const base = Math.max(sheet * 0.03, 60);
   const up = new THREE.Vector3(0, 1, 0);
 
   return (

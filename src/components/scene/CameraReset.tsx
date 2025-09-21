@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { useStudio } from "../../store/studio.store";
+import { GroupLayout } from "../../hair/group-layout";
 
 interface CameraResetProps {
   viewMode: '2D' | '3D';
@@ -16,10 +17,11 @@ export default function CameraReset({ viewMode }: CameraResetProps) {
       // Resetar a câmera ortográfica para a posição e zoom iniciais
       camera.zoom = 1;
       camera.position.set(0, 0, 10);
-  camera.left = -s.baseSize / 2;
-  camera.right = s.baseSize / 2;
-  camera.top = s.baseSize / 2;
-  camera.bottom = -s.baseSize / 2;
+      const { W, H } = GroupLayout.computeSheetSize(s);
+      camera.left = -W / 2;
+      camera.right = W / 2;
+      camera.top = H / 2;
+      camera.bottom = -H / 2;
       camera.near = -10000;
       camera.far = 10000;
       camera.updateProjectionMatrix();
@@ -31,7 +33,7 @@ export default function CameraReset({ viewMode }: CameraResetProps) {
       camera.far = 100000;
       camera.updateProjectionMatrix();
     }
-  }, [viewMode, camera, s.baseSize]);
+  }, [viewMode, camera, s]);
 
   return null;
 }

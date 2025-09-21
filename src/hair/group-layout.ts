@@ -1,10 +1,13 @@
 import * as THREE from "three";
 import { StudioState } from "../models/studio.int";
+import { REFERENCE_WORLD_SIZE } from "../utils/constants";
 
 export class GroupLayout {
   static computeSheetSize(s: StudioState) {
-  const W = s.baseSize * s.percentage;
-  const H = s.baseSize * s.percentage;
+  // Use a fixed reference world size so the world geometry/layout does not
+  // change when the export resolution (baseSize) is modified.
+  const W = REFERENCE_WORLD_SIZE;
+  const H = REFERENCE_WORLD_SIZE;
     return { W, H };
   }
 
