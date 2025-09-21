@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { StudioState } from "../models/studio.int";
+import { Constants } from "../utils/constants";
 
 export const useStudio = create<StudioState>((set, get) => ({
   lights: [
@@ -14,7 +15,7 @@ export const useStudio = create<StudioState>((set, get) => ({
   ],
   background_color: '#202425',
 
-  baseSize: 2048,
+  baseSize: Constants.DESIGN_SHEET,
   percentage: 1.0,
   cardsPerSheet: 9,
 
