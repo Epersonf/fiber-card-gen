@@ -70,4 +70,5 @@ export type StudioState = {
   addLight: (light: Omit<Light, 'id'>) => void;
   updateLight: (id: string, updates: Partial<Light>) => void;
   removeLight: (id: string) => void;
+  importConfig: (data: Partial<StudioState>) => void;
 };
