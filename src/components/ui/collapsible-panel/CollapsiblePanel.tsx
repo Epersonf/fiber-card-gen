@@ -22,7 +22,7 @@ export const CollapsiblePanel: React.FC<CollapsiblePanelProps> = ({ title, child
           {icon && <span className="collapsible-panel__icon">{icon}</span>}
           <span className="collapsible-panel__title">{title}</span>
         </div>
-        <span className="collapsible-panel__arrow">{open ? '▼' : '▶'}</span>
+        <span className="collapsible-panel__arrow" aria-hidden>▶</span>
       </button>
       {open && <div className="collapsible-panel__content">{children}</div>}
     </div>

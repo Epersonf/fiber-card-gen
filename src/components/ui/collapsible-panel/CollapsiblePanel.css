@@ -34,7 +34,12 @@
 .collapsible-panel__arrow {
   font-size: 1.3em;
   margin-right: 8px;
-  transition: transform 0.2s;
+  transition: transform 180ms ease;
+  transform-origin: 50% 50%;
+}
+
+.collapsible-panel.open .collapsible-panel__arrow {
+  transform: rotate(90deg);
 }
 .collapsible-panel__icon {
   display: inline-flex;
