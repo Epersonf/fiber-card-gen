@@ -6,6 +6,7 @@ import DSGroup from "../../ui/ds-group/DSGroup";
 import LabelColumn from "../../ui/label-column/LabelColumn";
 import SizedBox from "../../ui/sized-box/SizedBox";
 import DSInput from "../../ui/ds-input/DSInput";
+import DSSelect from "../../ui/ds-select/DSSelect";
 import { useBufferedNumberInput } from "../../../hooks/useBufferedNumberInput";
 
 export default function LightsPanelSection() {
@@ -59,16 +60,10 @@ function LightEditor({ light, updateLight, removeLight }: LightEditorProps) {
           />
         </label>
 
-        <label>
-          Type
-          <select
-            value={light.type}
-            onChange={(e) => updateLight(light.id, { type: e.target.value as 'directional' | 'point' })}
-          >
-            <option value="directional">Directional</option>
-            <option value="point">Point</option>
-          </select>
-        </label>
+        <DSSelect label="Type" value={light.type} onChange={(e) => updateLight(light.id, { type: e.target.value as 'directional' | 'point' })}>
+          <option value="directional">Directional</option>
+          <option value="point">Point</option>
+        </DSSelect>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'start', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: 4 }}>

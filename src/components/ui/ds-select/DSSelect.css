@@ -1,0 +1,17 @@
+.ds-select-label {
+  display: inline-flex;
+  flex-direction: row;
+  gap: 6px;
+}
+
+.ds-select-label-text {
+  color: var(--text, #e6eef6);
+}
+
+.ds-select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: var(--panel-bg, #1f2933);
+  color: var(--text, #e6eef6);
+}

@@ -4,6 +4,7 @@ import { Target } from 'lucide-react';
 import LabelRow from "../../ui/label-row/LabelRow";
 import DSSlider from "../../ui/ds-slider/DSSlider";
 import DSInput from "../../ui/ds-input/DSInput";
+import DSSelect from "../../ui/ds-select/DSSelect";
 import { useBufferedNumberInput } from "../../../hooks/useBufferedNumberInput";
 
 export default function SpawnAmountSection() {
@@ -45,14 +46,11 @@ export default function SpawnAmountSection() {
       </LabelRow>
 
       <LabelRow>
-        <label>
-          Curve
-          <select value={s.hair_amount_curve} onChange={e => set({ hair_amount_curve: e.target.value as any })}>
-            <option value="linear">Linear</option>
-            <option value="quad">Quadratic (t²)</option>
-            <option value="sqrt">Sqrt (√t)</option>
-          </select>
-        </label>
+        <DSSelect label="Curve" value={s.hair_amount_curve} onChange={e => set({ hair_amount_curve: e.target.value as any })}>
+          <option value="linear">Linear</option>
+          <option value="quad">Quadratic (t²)</option>
+          <option value="sqrt">Sqrt (√t)</option>
+        </DSSelect>
       </LabelRow>
     </CollapsiblePanel>
   );
