@@ -97,9 +97,10 @@ export class SceneRendererUtils {
       
       // Apply export camera settings
       const studio = useStudio.getState();
-      cam.position.x -= studio.exportCameraOffset.x; // Invertido para coincidir com o gizmo
-      cam.position.y -= studio.exportCameraOffset.y;
-      cam.zoom = 1 / studio.exportCameraScale; // Invertido: zoom out = scale up
+      cam.position.x -= studio.exportCameraOffset.x;
+      const empiricBaseOffsetPNGFromWebGL = viewH * 0.15;
+      cam.position.y -= empiricBaseOffsetPNGFromWebGL;
+      cam.zoom = 1 / studio.exportCameraScale;
       cam.updateProjectionMatrix();
     }
 
@@ -134,9 +135,9 @@ export class SceneRendererUtils {
       
       // Apply export camera settings
       const studio = useStudio.getState();
-      cam.position.x -= studio.exportCameraOffset.x; // Invertido para coincidir com o gizmo
-      cam.position.y -= studio.exportCameraOffset.y;
-      cam.zoom = 1 / studio.exportCameraScale; // Invertido: zoom out = scale up
+      cam.position.x -= studio.exportCameraOffset.x;
+      cam.position.y -= viewH * 0.15; // Offset fixo de 15% da altura
+      cam.zoom = 1 / studio.exportCameraScale;
       cam.updateProjectionMatrix();
     }
 
