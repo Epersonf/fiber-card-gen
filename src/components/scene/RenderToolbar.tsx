@@ -9,7 +9,7 @@ type Props = {
   setViewMode: (mode: '2D' | '3D') => void;
 };
 
-export default function RenderToolbar({ onRenderColor, onRenderNormal }: Props) {
+export default function RenderToolbar({ onRenderColor, onRenderNormal, viewMode, setViewMode }: Props) {
   const copyConfig = async () => {
     // pega o estado e remove as funções da store
     const { set, addLight, updateLight, removeLight, ...cfg } = useStudio.getState() as any;
@@ -30,6 +30,9 @@ export default function RenderToolbar({ onRenderColor, onRenderNormal }: Props) 
 
   return (
     <Toolbar>
+      <DSButton onClick={() => setViewMode(viewMode === '2D' ? '3D' : '2D')}>
+        {viewMode === '2D' ? '3D View' : '2D View'}
+      </DSButton>
       <DSButton onClick={onRenderColor}>Render Color</DSButton>
       <DSButton onClick={onRenderNormal}>Render Normal</DSButton>
       <DSButton onClick={copyConfig}>Copy Config</DSButton>

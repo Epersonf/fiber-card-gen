@@ -7,7 +7,6 @@ import SceneSetup from "./scene/SceneSetup";
 import SceneContent from "./scene/SceneContent";
 import RenderToolbar from "./scene/RenderToolbar";
 import Lights from "./scene/Lights";
-import ViewModeToggle from "./scene/ViewModeToggle";
 import CameraController from "./scene/camera/CameraController";
 import Controls2D from "./scene/controls/Controls2D";
 import Controls3D from "./scene/controls/Controls3D";
@@ -62,7 +61,6 @@ export default function HairScene() {
         viewMode={viewMode}
         setViewMode={setViewMode}
       />
-      <ViewModeToggle viewMode={viewMode} setViewMode={setViewMode} />
 
       <Canvas
         shadows
