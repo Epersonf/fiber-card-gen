@@ -3,10 +3,13 @@ import { CollapsiblePanel } from "../../ui/collapsible-panel/CollapsiblePanel";
 import { Target } from 'lucide-react';
 import LabelRow from "../../ui/label-row/LabelRow";
 import DSSlider from "../../ui/ds-slider/DSSlider";
+import DSInput from "../../ui/ds-input/DSInput";
+import { useBufferedNumberInput } from "../../../hooks/useBufferedNumberInput";
 
 export default function SpawnAmountSection() {
   const s = useStudio();
   const set = useStudio(st => st.set);
+  const hairAmountMaxBuf = useBufferedNumberInput(s.hair_amount_max);
 
   return (
   <CollapsiblePanel title="Spawn & Amount" defaultOpen icon={<Target size={14} />}>
@@ -28,11 +31,14 @@ export default function SpawnAmountSection() {
       </LabelRow>
 
       <LabelRow>
-        <label>
-          Hair Amount Max
-          <input type="number" min={1} step={1} value={s.hair_amount_max}
-            onChange={e => set({ hair_amount_max: Math.max(1, Math.floor(+e.target.value || 1)) })} />
-        </label>
+        <DSInput label="Hair Amount Max"
+          type="number"
+          min={1}
+          step={1}
+          value={hairAmountMaxBuf.value}
+          onChange={e => hairAmountMaxBuf.setValue(e.target.value)}
+          onBlur={() => hairAmountMaxBuf.getOnBlur((n) => set({ hair_amount_max: Math.max(1, Math.floor(n || 1)) }))()}
+          onKeyDown={hairAmountMaxBuf.getOnKeyDown()} />
         <DSSlider label="First Card %" min={0} max={1} step={0.01} value={s.hair_amount_min_percent}
           onChange={e => set({ hair_amount_min_percent: +e.target.value })}
           displayValue={(s.hair_amount_min_percent * 100).toFixed(0) + '%'} />
