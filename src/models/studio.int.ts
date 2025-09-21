@@ -14,6 +14,7 @@ export type StudioState = {
   exportCameraOffset: Vector2;
   exportCameraScale: number;
   cardsPerSheet: number;
+  cardsOffset: Vector2;
   background_color: string;
 
   strand_points_count: number;

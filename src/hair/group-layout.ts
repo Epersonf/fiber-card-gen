@@ -31,8 +31,16 @@ export class GroupLayout {
     W: number,
     H: number
   ) {
-    const x = -W / 2 + cellW / 2 + col * cellW;
-    const y = H / 2 - cellH / 2 - row * cellH;
+    // compute grid size
+    const { cols, rows } = this.computeGrid(s);
+    // base grid position
+    let x = -W / 2 + cellW / 2 + col * cellW;
+    let y = H / 2 - cellH / 2 - row * cellH;
+    // apply user-configurable card offsets (in world units)
+    const offsetX = (s.cardsOffset?.x ?? 0) / s.baseSize * W; // convert pixels to world units relative to sheet
+    const offsetY = (s.cardsOffset?.y ?? 0) / s.baseSize * H;
+    x += offsetX * (col - (cols - 1) / 2);
+    y -= offsetY * (row - (rows - 1) / 2);
     return new THREE.Vector3(x, y, 0);
   }
 }
