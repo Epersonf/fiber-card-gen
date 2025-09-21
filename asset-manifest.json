@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/fiber-card-gen/static/css/main.25d9ca08.css",
-    "main.js": "/fiber-card-gen/static/js/main.f2d24f50.js",
+    "main.js": "/fiber-card-gen/static/js/main.be2c2dd9.js",
     "index.html": "/fiber-card-gen/index.html",
     "main.25d9ca08.css.map": "/fiber-card-gen/static/css/main.25d9ca08.css.map",
-    "main.f2d24f50.js.map": "/fiber-card-gen/static/js/main.f2d24f50.js.map"
+    "main.be2c2dd9.js.map": "/fiber-card-gen/static/js/main.be2c2dd9.js.map"
   },
   "entrypoints": [
     "static/css/main.25d9ca08.css",
-    "static/js/main.f2d24f50.js"
+    "static/js/main.be2c2dd9.js"
   ]
 }
