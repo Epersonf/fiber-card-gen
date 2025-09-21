@@ -20,35 +20,21 @@ export class ExportPngUtils {
     canvas.height = h;
     const ctx = canvas.getContext("2d", { alpha: true })!;
 
-    // Criar ImageData
-    const R = parseInt(bgColorHex.slice(1, 3), 16);
-    const G = parseInt(bgColorHex.slice(3, 5), 16);
-    const B = parseInt(bgColorHex.slice(5, 7), 16);
-    const tol2 = 2 * 2; // tolerância^2 (2 níveis)
+    // Create ImageData and copy RGBA pixels (flip Y)
     const imageData = ctx.createImageData(w, h);
 
-    // WebGL tem Y crescendo para cima, Canvas tem Y crescendo para baixo
-    // Precisamos apenas inverter verticalmente os pixels
+    // WebGL Y grows up, Canvas Y grows down: flip vertically
     for (let y = 0; y < h; y++) {
-      const srcY = h - 1 - y; // Inverte verticalmente
-      
+      const srcY = h - 1 - y;
       for (let x = 0; x < w; x++) {
         const srcIndex = (srcY * w + x) * 4;
         const dstIndex = (y * w + x) * 4;
 
-        const r = pixels[srcIndex];
-        const g = pixels[srcIndex + 1];
-        const b = pixels[srcIndex + 2];
-        const a = pixels[srcIndex + 3];
-
-        const dr = r - R, dg = g - G, db = b - B;
-        const isBg = (dr * dr + dg * dg + db * db) <= tol2;
-        const newAlpha = isBg ? 0 : a;
-
-        imageData.data[dstIndex] = r;
-        imageData.data[dstIndex + 1] = g;
-        imageData.data[dstIndex + 2] = b;
-        imageData.data[dstIndex + 3] = newAlpha;
+        // Copy RGBA directly (use the alpha channel produced by the render target)
+        imageData.data[dstIndex] = pixels[srcIndex];
+        imageData.data[dstIndex + 1] = pixels[srcIndex + 1];
+        imageData.data[dstIndex + 2] = pixels[srcIndex + 2];
+        imageData.data[dstIndex + 3] = pixels[srcIndex + 3];
       }
     }
 

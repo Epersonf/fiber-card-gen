@@ -50,11 +50,16 @@ export class SceneRendererUtils {
     const oldClear = renderer.getClearColor(new THREE.Color());
     const oldAlpha = renderer.getClearAlpha();
 
+    // avoid drawing the scene background into the export RT so alpha is preserved
+    const oldBackground = scene.background;
+
     renderer.setRenderTarget(target);
+    scene.background = null;
     renderer.setClearColor(0x000000 as any, 0);
-    renderer.clear();
+    renderer.clear(true, true, true);
     renderer.render(scene, camera);
     renderer.setRenderTarget(null);
+    scene.background = oldBackground;
     renderer.setClearColor(oldClear, oldAlpha);
 
     this.restoreVisibility(hidden);
@@ -74,11 +79,17 @@ export class SceneRendererUtils {
 
     scene.overrideMaterial = new THREE.MeshNormalMaterial();
 
+    // avoid drawing the scene background into the export RT so alpha is preserved
+    const oldBackground = scene.background;
+
     renderer.setRenderTarget(target);
-    renderer.setClearColor(0x8080ff as any, 1);
-    renderer.clear();
+    scene.background = null;
+    // clear to transparent (keep RGB if needed in shader, alpha=0)
+    renderer.setClearColor(0x8080ff as any, 0);
+    renderer.clear(true, true, true);
     renderer.render(scene, camera);
     renderer.setRenderTarget(null);
+    scene.background = oldBackground;
     renderer.setClearColor(oldClear, oldAlpha);
 
     scene.overrideMaterial = backup;
@@ -112,13 +123,29 @@ export class SceneRendererUtils {
     const hidden = this.hideCardPlanes(scene);
     const oldClear = renderer.getClearColor(new THREE.Color());
     const oldAlpha = renderer.getClearAlpha();
+    const oldTone = (renderer as any).toneMapping;
+    const oldExposure = (renderer as any).toneMappingExposure;
+
+    // Ensure we render with a transparent background and no tone mapping for export
+    (renderer as any).toneMapping = THREE.NoToneMapping;
+    (renderer as any).toneMappingExposure = 1.0;
+
+    // avoid drawing the scene background into the export RT so alpha is preserved
+    const oldBackground = scene.background;
 
     renderer.setRenderTarget(target);
-    renderer.setClearColor(new THREE.Color(bgColorHex), 1);
-    renderer.clear();
+    scene.background = null;
+    // clear to transparent
+    renderer.setClearColor(0x000000 as any, 0);
+    renderer.clear(true, true, true);
     renderer.render(scene, cam);
     renderer.setRenderTarget(null);
+    scene.background = oldBackground;
+
+    // restore
     renderer.setClearColor(oldClear, oldAlpha);
+    (renderer as any).toneMapping = oldTone;
+    (renderer as any).toneMappingExposure = oldExposure;
 
     this.restoreVisibility(hidden);
     setTimeout(() => ExportPngUtils.downloadRenderTarget(renderer, target, "hair_color.png", bgColorHex), 75);
@@ -153,11 +180,16 @@ export class SceneRendererUtils {
 
     scene.overrideMaterial = new THREE.MeshNormalMaterial();
 
+    // avoid drawing the scene background into the export RT so alpha is preserved
+    const oldBackground = scene.background;
+
     renderer.setRenderTarget(target);
-    renderer.setClearColor(new THREE.Color(bgColorHex), 1);
-    renderer.clear();
+    scene.background = null;
+    renderer.setClearColor(new THREE.Color(bgColorHex), 0);
+    renderer.clear(true, true, true);
     renderer.render(scene, cam);
     renderer.setRenderTarget(null);
+    scene.background = oldBackground;
     renderer.setClearColor(oldClear, oldAlpha);
 
     scene.overrideMaterial = backup;
