@@ -1,18 +1,19 @@
 import DSButton from "../ui/ds-button/DSButton";
 import Toolbar from "../ui/toolbar/Toolbar";
 import { useStudio } from "../../store/studio.store";
-import { Image, Layers, Copy, Layout, Download } from "lucide-react";
+import { Image, Layers, Copy, Layout } from "lucide-react";
 import ContextMenu from "../ui/context-menu/ContextMenu";
-import { downloadText } from "../../utils/download.utils";
+import { ExportUtils } from "../../utils/export.utils";
 
 type Props = {
   onRenderColor: () => void;
   onRenderNormal: () => void;
+  onExportGLB?: () => void;
   viewMode: '2D' | '3D';
   setViewMode: (mode: '2D' | '3D') => void;
 };
 
-export default function RenderToolbar({ onRenderColor, onRenderNormal, viewMode, setViewMode }: Props) {
+export default function RenderToolbar({ onRenderColor, onRenderNormal, onExportGLB, viewMode, setViewMode }: Props) {
   const copyConfig = async () => {
     // pega o estado e remove as funções da store
     const { set, addLight, updateLight, removeLight, ...cfg } = useStudio.getState() as any;
@@ -34,7 +35,7 @@ export default function RenderToolbar({ onRenderColor, onRenderNormal, viewMode,
   const downloadConfig = () => {
     const { set, addLight, updateLight, removeLight, ...cfg } = useStudio.getState() as any;
     const json = JSON.stringify(cfg, null, 2);
-    downloadText('hair-config.json', json, 'application/json');
+    ExportUtils.downloadText('hair-config.json', json, 'application/json');
   };
 
   return (
@@ -70,7 +71,7 @@ export default function RenderToolbar({ onRenderColor, onRenderNormal, viewMode,
         items={[
           { key: 'copy', label: 'Copy Config', onClick: copyConfig },
           { key: 'download', label: 'Download Config', onClick: downloadConfig },
-          // Export FBX/GLB will be added later
+          { key: 'glb', label: 'Export GLB', onClick: () => { if (onExportGLB) onExportGLB(); } },
         ]}
       />
     </Toolbar>

@@ -15,6 +15,7 @@ import { SceneRendererUtils } from "../utils/scene-renderer.utils";
 import LightGizmos from "./scene/LightGizmos";
 import SpawnPlaneGizmo from "./scene/SpawnPlaneGizmo";
 import FrameGizmo2D from "./scene/FrameGizmo2D";
+import { ExportUtils } from "../utils/export.utils";
 
 export default function HairScene() {
   const s = useStudio();
@@ -58,6 +59,7 @@ export default function HairScene() {
             SceneRendererUtils.renderNormal2DDefault(scene, rendererRef.current, normalRT, exportW, exportH, bg);
           }
         }}
+  onExportGLB={() => { if (scene) ExportUtils.exportSceneGLB(scene, 'hair-scene.glb'); }}
         viewMode={viewMode}
         setViewMode={setViewMode}
       />
@@ -69,7 +71,7 @@ export default function HairScene() {
         camera={cameraProps.camera as any}
         dpr={[1, 2]}
         gl={{ preserveDrawingBuffer: true, antialias: true, alpha: true, powerPreference: "high-performance" }}
-  onCreated={({ gl, scene }) => {
+        onCreated={({ gl, scene }) => {
           gl.setClearColor(0x000000, 0);
           gl.toneMapping = THREE.ACESFilmicToneMapping;
           gl.toneMappingExposure = 0.7;
@@ -80,7 +82,7 @@ export default function HairScene() {
         }}
       >
         <CameraController viewMode={viewMode} viewW={viewW} viewH={viewH} />
-  <SceneSetup onSceneReady={(sc, cam) => { setScene(sc); }} />
+        <SceneSetup onSceneReady={(sc, cam) => { setScene(sc); }} />
         {viewMode === "2D" ? <Controls2D /> : <Controls3D />}
 
         <color attach="background" args={[bg]} />
