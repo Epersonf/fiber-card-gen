@@ -22,6 +22,7 @@ export const useStudio = create<StudioState>((set, get) => ({
   exportCameraOffset: { x: 0, y: 0 },
   cardsOffset: { x: -150, y: -150 },
   exportCameraScale: 1.0,
+  background_alpha: 0,
 
   strand_points_count: 25,
 

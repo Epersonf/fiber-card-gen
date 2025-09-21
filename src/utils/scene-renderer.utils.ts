@@ -130,17 +130,22 @@ export class SceneRendererUtils {
     (renderer as any).toneMapping = THREE.NoToneMapping;
     (renderer as any).toneMappingExposure = 1.0;
 
-    // avoid drawing the scene background into the export RT so alpha is preserved
-    const oldBackground = scene.background;
+  // avoid drawing the scene background into the export RT so alpha is preserved
+  const oldBackground = scene.background;
 
-    renderer.setRenderTarget(target);
-    scene.background = null;
-    // clear to transparent
-    renderer.setClearColor(0x000000 as any, 0);
-    renderer.clear(true, true, true);
-    renderer.render(scene, cam);
-    renderer.setRenderTarget(null);
-    scene.background = oldBackground;
+  // use the user-configured background color/alpha when clearing the RT
+  const studio = useStudio.getState();
+  const bgColor = new THREE.Color(studio.background_color || '#000000');
+  const bgAlpha = typeof studio.background_alpha === 'number' ? studio.background_alpha : 0;
+
+  renderer.setRenderTarget(target);
+  scene.background = null;
+  // clear with configured color & alpha (alpha=0 keeps transparency)
+  renderer.setClearColor(bgColor, bgAlpha);
+  renderer.clear(true, true, true);
+  renderer.render(scene, cam);
+  renderer.setRenderTarget(null);
+  scene.background = oldBackground;
 
     // restore
     renderer.setClearColor(oldClear, oldAlpha);

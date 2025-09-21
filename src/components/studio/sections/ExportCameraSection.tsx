@@ -5,6 +5,7 @@ import { ChangeEvent, useState } from "react";
 import DSInput from "../../ui/ds-input/DSInput";
 import DSSlider from "../../ui/ds-slider/DSSlider";
 import LabelColumn from "../../ui/label-column/LabelColumn";
+import { ColorUtils } from "../../../utils/color.utils";
 
 export function ExportCameraSection() {
   const studio = useStudio();
@@ -86,6 +87,31 @@ export function ExportCameraSection() {
             studio.set({ exportCameraScale: Number(e.target.value) })
           }
           displayValue={`${(studio.exportCameraScale * 100).toFixed(0)}%`}
+        />
+      </LabelColumn>
+
+      <LabelColumn>
+        <label>Background Color</label>
+        {/* color picker for RGB */}
+        <input
+          type="color"
+          value={ColorUtils.normalizeHex(studio.background_color)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            studio.set({ background_color: ColorUtils.normalizeHex(e.target.value) })
+          }
+        />
+        {/* alpha as number input 0.0 - 1.0 */}
+        <DSInput
+          label="Alpha"
+          value={studio.background_alpha.toString()}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            studio.set({ background_alpha: Math.max(0, Math.min(1, parseFloat(e.target.value) || 0)) })
+          }
+          type="number"
+          step="0.01"
+          min="0"
+          max="1"
+          placeholder="0.00 - 1.00"
         />
       </LabelColumn>
     </CollapsiblePanel>
