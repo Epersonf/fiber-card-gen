@@ -1,7 +1,8 @@
 import DSButton from "../ui/ds-button/DSButton";
 import Toolbar from "../ui/toolbar/Toolbar";
 import { useStudio } from "../../store/studio.store";
-import { Image, Layers, Copy, Layout } from "lucide-react";
+import { Image, Layers, Copy, Layout, Download } from "lucide-react";
+import ContextMenu from "../ui/context-menu/ContextMenu";
 
 type Props = {
   onRenderColor: () => void;
@@ -49,12 +50,21 @@ export default function RenderToolbar({ onRenderColor, onRenderNormal, viewMode,
           Render Normal
         </span>
       </DSButton>
-      <DSButton onClick={copyConfig}>
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-          <Copy size={16} style={{ marginRight: 8 }} />
-          Copy Config
-        </span>
-      </DSButton>
+      <ContextMenu
+        trigger={(
+          <DSButton>
+            <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+              <Copy size={16} style={{ marginRight: 8 }} />
+              Export
+            </span>
+          </DSButton>
+        )}
+        align="right"
+        items={[
+          { key: 'copy', label: 'Copy Config', onClick: copyConfig },
+          // Download and Export options will be added later
+        ]}
+      />
     </Toolbar>
   );
 }
