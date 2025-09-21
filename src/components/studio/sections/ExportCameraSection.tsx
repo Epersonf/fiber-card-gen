@@ -1,22 +1,36 @@
 import { CollapsiblePanel } from "../../ui/collapsible-panel/CollapsiblePanel";
 import { useStudio } from "../../../store/studio.store";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 import DSInput from "../../ui/ds-input/DSInput";
 import DSSlider from "../../ui/ds-slider/DSSlider";
 import LabelColumn from "../../ui/label-column/LabelColumn";
 
 export function ExportCameraSection() {
   const studio = useStudio();
+  const [baseSizeInput, setBaseSizeInput] = useState<string>(studio.baseSize.toString());
+
+  const commitBaseSize = () => {
+    // parse and clamp to max 512
+      const parsed = parseInt(baseSizeInput, 10);
+      if (Number.isNaN(parsed)) {
+        setBaseSizeInput(String(studio.baseSize));
+        return;
+      }
+      // Enforce a minimum of 512 (do not allow values below 512)
+      const clamped = Math.max(parsed, 512);
+    studio.set({ baseSize: clamped });
+    setBaseSizeInput(clamped.toString());
+  };
 
   return (
     <CollapsiblePanel title="Export Camera">
       <LabelColumn>
         <label>Base Size</label>
         <DSInput
-          value={studio.baseSize.toString()}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            studio.set({ baseSize: parseInt(e.target.value) || 0 })
-          }
+          value={baseSizeInput}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setBaseSizeInput(e.target.value)}
+          onBlur={() => commitBaseSize()}
+          onKeyDown={(e) => { if (e.key === 'Enter') commitBaseSize(); }}
           type="number"
           placeholder="Base Size (px)"
         />
