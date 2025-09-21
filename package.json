@@ -16,6 +16,7 @@
     "@types/react-dom": "^19.1.9",
     "chroma-js": "^3.1.2",
     "leva": "^0.10.0",
+    "lucide-react": "^0.544.0",
     "open-simplex-noise": "^2.5.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

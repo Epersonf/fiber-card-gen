@@ -1,6 +1,7 @@
 import DSButton from "../ui/ds-button/DSButton";
 import Toolbar from "../ui/toolbar/Toolbar";
 import { useStudio } from "../../store/studio.store";
+import { Image, Layers, Copy, Layout } from "lucide-react";
 
 type Props = {
   onRenderColor: () => void;
@@ -31,11 +32,29 @@ export default function RenderToolbar({ onRenderColor, onRenderNormal, viewMode,
   return (
     <Toolbar>
       <DSButton onClick={() => setViewMode(viewMode === '2D' ? '3D' : '2D')}>
-        {viewMode === '2D' ? '3D View' : '2D View'}
+        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+          <Layout size={16} style={{ marginRight: 8 }} />
+          {viewMode === '2D' ? '3D View' : '2D View'}
+        </span>
       </DSButton>
-      <DSButton onClick={onRenderColor}>Render Color</DSButton>
-      <DSButton onClick={onRenderNormal}>Render Normal</DSButton>
-      <DSButton onClick={copyConfig}>Copy Config</DSButton>
+      <DSButton onClick={onRenderColor}>
+        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+          <Image size={16} style={{ marginRight: 8 }} />
+          Render Color
+        </span>
+      </DSButton>
+      <DSButton onClick={onRenderNormal}>
+        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+          <Layers size={16} style={{ marginRight: 8 }} />
+          Render Normal
+        </span>
+      </DSButton>
+      <DSButton onClick={copyConfig}>
+        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+          <Copy size={16} style={{ marginRight: 8 }} />
+          Copy Config
+        </span>
+      </DSButton>
     </Toolbar>
   );
 }
