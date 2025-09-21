@@ -7,7 +7,7 @@ import type { StudioState } from "./models/studio.int";
 
 const ALLOWED_KEYS: (keyof StudioState)[] = [
   "lights",
-  "baseWidth", "baseHeight", "percentage", "cardsPerSheet", "marginPx",
+  "baseWidth", "baseHeight", "percentage", "cardsPerSheet",
   "strand_points_count",
   "gradient_color_enabled", "hair_color", "glossiness", "sheen",
   "root_thickness", "tip_thickness",

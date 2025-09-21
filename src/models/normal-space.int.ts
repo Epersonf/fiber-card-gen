@@ -1,1 +1,0 @@
-export type NormalSpace = "tangent" | "object" | "world";

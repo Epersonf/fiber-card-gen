@@ -6,7 +6,7 @@ import { HairBuilder } from "../../hair/hair-builder";
 export default function SceneContent() {
   const s = useStudio();
   const group = useMemo(() => HairBuilder.build(1234, s), [
-    s.baseWidth, s.baseHeight, s.percentage, s.cardsPerSheet, s.marginPx,
+    s.baseWidth, s.baseHeight, s.percentage, s.cardsPerSheet,
     s.strand_points_count, s.gradient_color_enabled,
     s.hair_color, s.glossiness, s.sheen,
     s.root_thickness, s.tip_thickness,

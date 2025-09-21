@@ -20,8 +20,6 @@ export default function RenderOptionsSection() {
       <label>Cards per Sheet <input type="number" min={1} value={s.cardsPerSheet} onChange={e => set({ cardsPerSheet: +e.target.value })} /></label>
       <SizedBox height={10} />
       <label>Grid Layout <span>{gridCols} × {gridRows}</span></label>
-      <SizedBox height={10} />
-      <label>Margin (px) <input type="number" min={0} value={s.marginPx} onChange={e => set({ marginPx: +e.target.value })} /></label>
     </CollapsiblePanel>
   );
 }

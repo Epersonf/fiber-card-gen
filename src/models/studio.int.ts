@@ -1,7 +1,6 @@
 import { GradientStop } from "./gradient-stop";
 import { HairAmountCurveOpts } from "./hair-amount-curve";
 import { Light } from "./light.int";
-import { NormalSpace } from "./normal-space.int";
 
 export type StudioState = {
   lights: Light[];
@@ -10,7 +9,6 @@ export type StudioState = {
   baseHeight: number;
   percentage: number;
   cardsPerSheet: number;
-  marginPx: number;
   background_color: string;
 
   strand_points_count: number;

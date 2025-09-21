@@ -17,8 +17,8 @@ export class GroupLayout {
   static computeCell(s: StudioState) {
     const { W, H } = this.computeSheetSize(s);
     const { cols, rows } = this.computeGrid(s);
-    const cellW = (W - (cols + 1) * s.marginPx) / cols;
-    const cellH = (H - (rows + 1) * s.marginPx) / rows;
+    const cellW = W / cols;
+    const cellH = H / rows;
     return { cellW, cellH, cols, rows, W, H };
   }
 
@@ -31,8 +31,8 @@ export class GroupLayout {
     W: number,
     H: number
   ) {
-    const x = -W / 2 + s.marginPx + cellW / 2 + col * (cellW + s.marginPx);
-    const y = H / 2 - s.marginPx - cellH / 2 - row * (cellH + s.marginPx);
+    const x = -W / 2 + cellW / 2 + col * cellW;
+    const y = H / 2 - cellH / 2 - row * cellH;
     return new THREE.Vector3(x, y, 0);
   }
 }
