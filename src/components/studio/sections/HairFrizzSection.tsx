@@ -1,11 +1,12 @@
 import { useStudio } from "../../../store/studio.store";
 import { CollapsiblePanel } from "../../ui/collapsible-panel/CollapsiblePanel";
+import { Wind } from 'lucide-react';
 import DSSlider from "../../ui/ds-slider/DSSlider";
 
 export default function HairFrizzSection() {
   const s = useStudio(); const set = useStudio(st => st.set);
   return (
-    <CollapsiblePanel title="Hair Frizz" defaultOpen={false}>
+    <CollapsiblePanel title="Hair Frizz" defaultOpen={false} icon={<Wind size={14} />}>
       <label>Curve Enabled <input type="checkbox" checked={s.frizz_curve_enabled} onChange={e => set({ frizz_curve_enabled: e.target.checked })} /></label>
       <label><input type="checkbox" checked={s.enable_frizz_hair} onChange={e => set({ enable_frizz_hair: e.target.checked })} /> Enable Hair Frizz</label>
       {s.enable_frizz_hair && (

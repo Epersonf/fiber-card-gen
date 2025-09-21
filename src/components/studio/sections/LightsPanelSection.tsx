@@ -1,5 +1,6 @@
 import { useStudio } from "../../../store/studio.store";
 import { CollapsiblePanel } from "../../ui/collapsible-panel/CollapsiblePanel";
+import { Sun } from 'lucide-react';
 import DSButton from "../../ui/ds-button/DSButton";
 import DSGroup from "../../ui/ds-group/DSGroup";
 import LabelRow from "../../ui/label-row/LabelRow";
@@ -8,7 +9,7 @@ export default function LightsPanelSection() {
   const { lights, addLight, updateLight, removeLight } = useStudio();
 
   return (
-    <CollapsiblePanel title="Lighting" defaultOpen={false}>
+    <CollapsiblePanel title="Lighting" defaultOpen={false} icon={<Sun size={14} />}>
       {lights.map((light) => (
         <DSGroup key={light.id} title={`Light ${light.id}`}>
           <label>

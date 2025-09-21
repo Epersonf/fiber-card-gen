@@ -1,5 +1,6 @@
 import { useStudio } from "../../../store/studio.store";
 import { CollapsiblePanel } from "../../ui/collapsible-panel/CollapsiblePanel";
+import { Target } from 'lucide-react';
 import LabelRow from "../../ui/label-row/LabelRow";
 import DSSlider from "../../ui/ds-slider/DSSlider";
 
@@ -8,7 +9,7 @@ export default function SpawnAmountSection() {
   const set = useStudio(st => st.set);
 
   return (
-    <CollapsiblePanel title="Spawn & Amount" defaultOpen>
+  <CollapsiblePanel title="Spawn & Amount" defaultOpen icon={<Target size={14} />}>
       <label>
         Enabled
         <input type="checkbox" checked={s.spawn_enabled} onChange={e => set({ spawn_enabled: e.target.checked })} />

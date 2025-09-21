@@ -1,4 +1,5 @@
 import { CollapsiblePanel } from "../../ui/collapsible-panel/CollapsiblePanel";
+import { Camera } from 'lucide-react';
 import { useStudio } from "../../../store/studio.store";
 import { ChangeEvent, useState } from "react";
 import DSInput from "../../ui/ds-input/DSInput";
@@ -23,7 +24,7 @@ export function ExportCameraSection() {
   };
 
   return (
-    <CollapsiblePanel title="Export Camera">
+  <CollapsiblePanel title="Export Camera" icon={<Camera size={14} />}>
       <LabelColumn>
         <label>Base Size</label>
         <DSInput

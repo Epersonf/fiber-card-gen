@@ -1,5 +1,6 @@
 import { useStudio } from "../../../store/studio.store";
 import { CollapsiblePanel } from "../../ui/collapsible-panel/CollapsiblePanel";
+import { Image as ImageIcon } from 'lucide-react';
 import LabelColumn from "../../ui/label-column/LabelColumn";
 import LabelRow from "../../ui/label-row/LabelRow";
 import DSSlider from "../../ui/ds-slider/DSSlider";
@@ -9,7 +10,7 @@ export default function HairColorSection() {
   const s = useStudio(); const set = useStudio(st => st.set);
 
   return (
-    <CollapsiblePanel title="Hair Color" defaultOpen={false}>
+  <CollapsiblePanel title="Hair Color" defaultOpen={false} icon={<ImageIcon size={14} />}>
       <LabelColumn>
         <label>
           Gradient Color
