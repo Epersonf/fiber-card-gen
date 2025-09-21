@@ -2,10 +2,10 @@
 import { useStudio } from "../../store/studio.store";
 
 export default function Lights() {
-  const { lights, baseWidth, baseHeight } = useStudio();
+  const { lights, baseSize } = useStudio();
 
-  const halfW = baseWidth / 2;
-  const halfH = baseHeight / 2;
+  const halfW = baseSize / 2;
+  const halfH = baseSize / 2;
 
   return (
     <>

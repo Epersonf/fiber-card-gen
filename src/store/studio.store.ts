@@ -14,8 +14,7 @@ export const useStudio = create<StudioState>((set, get) => ({
   ],
   background_color: '#202425',
 
-  baseWidth: 3000,
-  baseHeight: 3000,
+  baseSize: 2048,
   percentage: 1.0,
   cardsPerSheet: 9,
 

@@ -16,10 +16,10 @@ export default function CameraReset({ viewMode }: CameraResetProps) {
       // Resetar a câmera ortográfica para a posição e zoom iniciais
       camera.zoom = 1;
       camera.position.set(0, 0, 10);
-      camera.left = -s.baseWidth / 2;
-      camera.right = s.baseWidth / 2;
-      camera.top = s.baseHeight / 2;
-      camera.bottom = -s.baseHeight / 2;
+  camera.left = -s.baseSize / 2;
+  camera.right = s.baseSize / 2;
+  camera.top = s.baseSize / 2;
+  camera.bottom = -s.baseSize / 2;
       camera.near = -10000;
       camera.far = 10000;
       camera.updateProjectionMatrix();
@@ -31,7 +31,7 @@ export default function CameraReset({ viewMode }: CameraResetProps) {
       camera.far = 100000;
       camera.updateProjectionMatrix();
     }
-  }, [viewMode, camera, s.baseWidth, s.baseHeight]);
+  }, [viewMode, camera, s.baseSize]);
 
   return null;
 }

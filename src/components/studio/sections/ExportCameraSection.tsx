@@ -11,22 +11,14 @@ export function ExportCameraSection() {
   return (
     <CollapsiblePanel title="Export Camera">
       <LabelColumn>
-        <label>Base Dimensions</label>
+        <label>Base Size</label>
         <DSInput
-          value={studio.baseWidth.toString()}
+          value={studio.baseSize.toString()}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            studio.set({ baseWidth: parseInt(e.target.value) || 0 })
+            studio.set({ baseSize: parseInt(e.target.value) || 0 })
           }
           type="number"
-          placeholder="Base Width"
-        />
-        <DSInput
-          value={studio.baseHeight.toString()}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            studio.set({ baseHeight: parseInt(e.target.value) || 0 })
-          }
-          type="number"
-          placeholder="Base Height"
+          placeholder="Base Size (px)"
         />
       </LabelColumn>
 

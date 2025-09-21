@@ -3,8 +3,8 @@ import { StudioState } from "../models/studio.int";
 
 export class GroupLayout {
   static computeSheetSize(s: StudioState) {
-    const W = s.baseWidth * s.percentage;
-    const H = s.baseHeight * s.percentage;
+  const W = s.baseSize * s.percentage;
+  const H = s.baseSize * s.percentage;
     return { W, H };
   }
 

@@ -6,9 +6,8 @@ import { Vector2 } from "./vector2";
 export type StudioState = {
   lights: Light[];
 
-  // Base render dimensions
-  baseWidth: number;
-  baseHeight: number;
+  // Base render dimensions (single square size)
+  baseSize: number;
   percentage: number;
 
   // Export camera properties

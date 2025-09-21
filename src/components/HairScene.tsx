@@ -19,14 +19,14 @@ import FrameGizmo2D from "./scene/FrameGizmo2D";
 export default function HairScene() {
   const s = useStudio();
 
-  const exportW = Math.floor(s.baseWidth * s.percentage);
-  const exportH = Math.floor(s.baseHeight * s.percentage);
-  const viewW = s.baseWidth;
-  const viewH = s.baseHeight;
+  const exportSize = Math.floor(s.baseSize * s.percentage);
+  const exportW = exportSize;
+  const exportH = exportSize;
+  const viewW = s.baseSize;
+  const viewH = s.baseSize;
 
   const [viewMode, setViewMode] = useState<"2D" | "3D">("2D");
   const [scene, setScene] = useState<THREE.Scene | null>(null);
-  const [camera, setCamera] = useState<THREE.Camera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
 
   const { colorRT, normalRT } = useRenderTargets(exportW, exportH);
@@ -69,7 +69,7 @@ export default function HairScene() {
         camera={cameraProps.camera as any}
         dpr={[1, 2]}
         gl={{ preserveDrawingBuffer: true, antialias: true, alpha: true, powerPreference: "high-performance" }}
-        onCreated={({ gl, scene, camera }) => {
+  onCreated={({ gl, scene }) => {
           gl.setClearColor(0x000000, 0);
           gl.toneMapping = THREE.ACESFilmicToneMapping;
           gl.toneMappingExposure = 0.7;
@@ -77,11 +77,10 @@ export default function HairScene() {
           gl.shadowMap.enabled = true;
           gl.shadowMap.type = THREE.VSMShadowMap;
           setScene(scene);
-          setCamera(camera);
         }}
       >
         <CameraController viewMode={viewMode} viewW={viewW} viewH={viewH} />
-        <SceneSetup onSceneReady={(sc, cam) => { setScene(sc); setCamera(cam); }} />
+  <SceneSetup onSceneReady={(sc, cam) => { setScene(sc); }} />
         {viewMode === "2D" ? <Controls2D /> : <Controls3D />}
 
         <color attach="background" args={[bg]} />

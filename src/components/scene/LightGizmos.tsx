@@ -5,10 +5,10 @@ import { useStudio } from "../../store/studio.store";
 type Props = { enabled: boolean };
 
 export default function LightGizmos({ enabled }: Props) {
-  const { lights, baseWidth, baseHeight } = useStudio();
+  const { lights, baseSize } = useStudio();
   if (!enabled) return null;
 
-  const base = Math.max(Math.min(baseWidth, baseHeight) * 0.03, 60);
+  const base = Math.max(baseSize * 0.03, 60);
   const up = new THREE.Vector3(0, 1, 0);
 
   return (
